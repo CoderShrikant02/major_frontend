@@ -1,0 +1,28 @@
+{
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+    "name": "White Flies (Bemisia Tabacci)",
+    "image": "whitefly.png"
+  },
+  "Leaf Miner": {
+    "name": "Leaf Miner",
+    "image": "leafminer.png"
+  },
+  "Spotted Wilt Virus": {
+    "name": "Thrips",
+    "image": "thrips.png"
+  },
+  "Tomato___Spider_mites Two-spotted_spider_mite": {
+    "name": "Red Spider Mite & Two Spotted Spider Mite",
+    "images": ["spider_mite.png", "spider_mite_1_1.png"]
+  },
+  "Tomato___Late_blight": {
+    "name": "Phytophthora infestans"
+    
+  },
+  "Tomato___Early_blight": {
+    "name": "Alternaria solani"
+  },
+  "Tomato___Bacterial_spot": {
+    "name": "Xanthomonas"
+  }
+}

@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍅 Dashboard - TomatoCare</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0f3460 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background Particles */
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, #16a34a 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite;
+            opacity: 0.2;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0); }
+            25% { transform: translate(50px, -50px); }
+            50% { transform: translate(-50px, -100px); }
+            75% { transform: translate(-100px, 50px); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: white;
+            margin-bottom: 30px;
+            background: rgba(10, 10, 10, 0.8);
+            padding: 25px 40px;
+            border-radius: 20px;
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .header-left h1 {
+            font-size: 2.5em;
+            margin-bottom: 5px;
+            background: linear-gradient(135deg, #fff, #16a34a);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 10px rgba(22, 163, 74, 0.3));
+        }
+
+        .header-left p {
+            font-size: 1.1em;
+            color: #aaa;
+        }
+
+        .header-right {
+            text-align: right;
+        }
+
+        .user-info {
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            color: #16a34a;
+            font-weight: 600;
+        }
+
+        .btn-logout {
+            background: transparent;
+            color: #16a34a;
+            border: 2px solid #16a34a;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .btn-logout:hover {
+            background: #16a34a;
+            color: white;
+            box-shadow: 0 0 30px rgba(22, 163, 74, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s;
+        }
+
+        .card:hover {
+            border-color: rgba(22, 163, 74, 0.5);
+            box-shadow: 0 15px 50px rgba(22, 163, 74, 0.2);
+        }
+
+        .card h2 {
+            color: #176433  ;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .upload-section {
+            text-align: center;
+        }
+
+        .upload-area {
+            border: 3px dashed rgba(22, 163, 74, 0.5);
+            border-radius: 15px;
+            padding: 50px 20px;
+            margin: 20px 0;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: rgba(22, 163, 74, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .upload-area::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(22, 163, 74, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .upload-area:hover {
+            border-color: #16a34a;
+            background: rgba(22, 163, 74, 0.1);
+            box-shadow: 0 0 30px rgba(22, 163, 74, 0.2);
+        }
+
+        .upload-area:hover::before {
+            animation: shine 1.5s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .upload-area.dragover {
+            border-color: #22c55e;
+            background: rgba(22, 163, 74, 0.15);
+            box-shadow: 0 0 40px rgba(22, 163, 74, 0.4);
+        }
+
+        .upload-icon {
+            font-size: 3em;
+            margin-bottom: 10px;
+            filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.6));
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-area p {
+            color: #ccc;
+            position: relative;
+            z-index: 1;
+        }
+
+        .upload-area p strong {
+            color: #16a34a;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(22, 163, 74, 0.5);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .preview-image {
+            max-width: 100%;
+            border-radius: 10px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .results-section {
+            display: none;
+        }
+
+        .recommendation-section {
+            margin-top: 20px;
+            padding: 30px;
+            background: rgba(22, 163, 74, 0.08);
+            border: 2px solid rgba(22, 163, 74, 0.4);
+            border-radius: 15px;
+        }
+
+        .recommendation-section h3 {
+            color: #22c55e;
+            margin-bottom: 25px;
+            font-size: 1.8em;
+            text-align: center;
+            text-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
+        }
+
+        .pesticide-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(22, 163, 74, 0.4);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 20px;
+            transition: all 0.3s;
+            backdrop-filter: blur(10px);
+        }
+
+        .pesticide-card:hover {
+            border-color: #22c55e;
+            box-shadow: 0 8px 30px rgba(22, 163, 74, 0.3);
+            transform: translateY(-3px);
+            background: rgba(22, 163, 74, 0.1);
+        }
+
+        .pesticide-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid rgba(22, 163, 74, 0.2);
+        }
+
+        .pesticide-name {
+            color: #22c55e;
+            font-size: 1.4em;
+            font-weight: 700;
+            text-shadow: 0 0 10px rgba(22, 163, 74, 0.3);
+        }
+
+        .pesticide-type {
+            padding: 8px 20px;
+            border-radius: 25px;
+            font-size: 0.9em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .type-chemical {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fff;
+            border: 2px solid rgba(239, 68, 68, 0.6);
+            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
+        }
+
+        .type-bio {
+            background: rgba(34, 197, 94, 0.3);
+            color: #fff;
+            border: 2px solid rgba(34, 197, 94, 0.6);
+            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
+        }
+
+        .type-organic {
+            background: rgba(234, 179, 8, 0.3);
+            color: #fff;
+            border: 2px solid rgba(234, 179, 8, 0.6);
+            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
+        }
+
+        .pesticide-details {
+            line-height: 2;
+        }
+
+        .pesticide-details > div {
+            padding: 10px 0;
+            color: #ddd;
+            font-size: 1.05em;
+        }
+
+        .pesticide-details strong {
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 1.1em;
+            display: inline-block;
+            min-width: 120px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            padding: 8px 0;
+        }
+
+        .detail-icon {
+            font-size: 1.2em;
+            min-width: 30px;
+        }
+
+        .detail-content {
+            flex: 1;
+            color: #fff;
+        }
+
+        .no-recommendations {
+            text-align: center;
+            padding: 40px;
+            color: #aaa;
+            font-size: 1.1em;
+        }
+
+        .no-recommendations p {
+            margin: 10px 0;
+        }
+
+        /* Pesticide Table Styles */
+        .pesticide-table-container {
+            overflow-x: auto;
+            border-radius: 15px;
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            background: rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+        }
+
+        .pesticide-table {
+            width: 100%;
+            border-collapse: collapse;
+            color: white;
+            font-size: 0.95em;
+        }
+
+        .pesticide-table thead {
+            background: linear-gradient(135deg, rgba(22, 163, 74, 0.4), rgba(34, 197, 94, 0.4));
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .pesticide-table th {
+            padding: 15px 12px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1em;
+            color: #22c55e;
+            border-bottom: 2px solid rgba(22, 163, 74, 0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pesticide-table td {
+            padding: 12px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ddd;
+        }
+
+        .pesticide-table tbody tr {
+            transition: all 0.3s;
+        }
+
+        .pesticide-table tbody tr:hover {
+            background: rgba(22, 163, 74, 0.15);
+        }
+
+        .pesticide-table tbody tr:nth-child(even) {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .pesticide-table tbody tr:nth-child(even):hover {
+            background: rgba(22, 163, 74, 0.15);
+        }
+
+        .table-pesticide-name {
+            color: #22c55e;
+            font-weight: 700;
+            font-size: 1.05em;
+        }
+
+        .table-type-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .table-type-chemical {
+            background: rgba(239, 68, 68, 0.3);
+            color: #fff;
+            border: 1px solid rgba(239, 68, 68, 0.6);
+        }
+
+        .table-type-bio {
+            background: rgba(34, 197, 94, 0.3);
+            color: #fff;
+            border: 1px solid rgba(34, 197, 94, 0.6);
+        }
+
+        .table-type-organic {
+            background: rgba(234, 179, 8, 0.3);
+            color: #fff;
+            border: 1px solid rgba(234, 179, 8, 0.6);
+        }
+
+        .prediction-card {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.4);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .prediction-card h2 {
+            font-size: 2em;
+            margin-bottom: 15px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+        }
+
+        .confidence {
+            font-size: 1.4em;
+            opacity: 0.95;
+            font-weight: 600;
+        }
+
+        .top-predictions h3 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .prediction-item {
+            margin-bottom: 15px;
+        }
+
+        .prediction-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            background: rgba(22, 163, 74, 0.1);
+            border: 1px solid rgba(22, 163, 74, 0.3);
+            border-radius: 10px;
+            height: 25px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            height: 100%;
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 10px;
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
+        }
+
+        .all-predictions {
+            margin-top: 20px;
+        }
+
+        .all-predictions summary {
+            cursor: pointer;
+            padding: 10px;
+            background: #f5f5f5;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+
+        .all-predictions-list {
+            margin-top: 10px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .sidebar {
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(20px);
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .sidebar h3 {
+            color: #16a34a;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+        }
+
+        .info-box {
+            background: rgba(22, 163, 74, 0.05);
+            border: 1px solid rgba(22, 163, 74, 0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #ccc;
+        }
+
+        .info-box p {
+            color: #16a34a;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            color: #aaa;
+        }
+
+        .class-list {
+            list-style: none;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .class-list::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .class-list::-webkit-scrollbar-track {
+            background: rgba(22, 163, 74, 0.1);
+            border-radius: 10px;
+        }
+
+        .class-list::-webkit-scrollbar-thumb {
+            background: #16a34a;
+            border-radius: 10px;
+        }
+
+        .class-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(22, 163, 74, 0.2);
+            color: #aaa;
+            transition: all 0.3s;
+        }
+
+        .class-list li:hover {
+            color: #16a34a;
+            padding-left: 10px;
+        }
+
+        .class-list li:last-child {
+            border-bottom: none;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 30px;
+        }
+
+        .spinner {
+            border: 4px solid rgba(22, 163, 74, 0.1);
+            border-top: 4px solid #16a34a;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+            box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading p {
+            color: #16a34a;
+            margin-top: 15px;
+            font-weight: 600;
+        }
+
+        .prediction-label {
+            color: #ccc;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+            header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header-right {
+                text-align: center;
+                margin-top: 15px;
+            }
+            .results-grid {
+                grid-template-columns: 1fr !important;
+            }
+        }
+
+        /* New Layout Styles */
+        .results-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .upload-section {
+            height: fit-content;
+        }
+
+        .results-info-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .disease-info-card {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.3);
+        }
+
+        .disease-info-card h2 {
+            font-size: 2em;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .confidence-badge {
+            font-size: 1.3em;
+            font-weight: 700;
+            display: inline-block;
+            padding: 8px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 25px;
+            margin-top: 10px;
+        }
+
+        .pest-info-card {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
+            border: 2px solid rgba(239, 68, 68, 0.4);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.2);
+        }
+
+        .pest-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .pest-image-wrapper {
+            flex-shrink: 0;
+        }
+
+        .pest-image-wrapper img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 10px;
+            border: 2px solid rgba(239, 68, 68, 0.6);
+        }
+
+        .pest-details {
+            flex: 1;
+        }
+
+        .pest-label {
+            color: #ef4444;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .pest-name {
+            color: white;
+            font-size: 1.3em;
+            font-weight: 700;
+        }
+
+        .table-section {
+            width: 100%;
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            padding: 15px;
+            background: rgba(22, 163, 74, 0.1);
+            border-left: 4px solid #22c55e;
+            border-radius: 8px;
+        }
+
+        .section-header h3 {
+            color: #22c55e;
+            margin: 0;
+            font-size: 1.5em;
+        }
+    </style>
+</head>
+<body>
+    <div class="particles" id="particles"></div>
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>🍅 Tomato Disease Classifier</h1>
+                <p>Upload an image of a tomato plant leaf to identify potential diseases</p>
+            </div>
+            <div class="header-right">
+                <div class="user-info">Welcome, {{ session.user_name }}!</div>
+                <a href="{{ url_for('logout') }}" class="btn-logout">Logout</a>
+            </div>
+        </header>
+
+        <!-- Main Grid: Upload Left, Results Right -->
+        <div class="results-grid" id="mainGrid">
+            <!-- Left: Upload Section -->
+            <div class="card upload-section">
+                <h2>📤 Upload Image</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p><strong>Click to upload</strong> or drag and drop</p>
+                    <p style="color: #666; margin-top: 10px;">Supported formats: JPG, JPEG, PNG</p>
+                </div>
+                <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png">
+                <img id="previewImage" class="preview-image" alt="Preview">
+                <div style="text-align: center;">
+                    <button class="btn" id="classifyBtn" disabled>🔍 Classify Image</button>
+                </div>
+                <div class="loading" id="loading">
+                    <div class="spinner"></div>
+                    <p style="margin-top: 10px;">Analyzing image...</p>
+                </div>
+            </div>
+
+            <!-- Right: Results Info Section -->
+            <div class="results-info-section" id="resultsInfoSection" style="display: none;">
+                <div class="card disease-info-card">
+                    <h2 id="predictedClass">--</h2>
+                    <div class="confidence-badge" id="confidence">--</div>
+                </div>
+
+                <div class="card pest-info-card" id="pestInfoCard" style="display: none;">
+                    <div class="pest-header">
+                        <div class="pest-image-wrapper" id="pestImageWrapper">
+                            <img id="pestImage" src="" alt="Pest">
+                            <div id="pestEmoji" style="display: none; font-size: 4em;">🐛</div>
+                        </div>
+                        <div class="pest-details">
+                            <div class="pest-label">🎯 Responsible Pest/Organism</div>
+                            <div class="pest-name" id="pestName">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table Section Below (Full Width) -->
+        <div class="card table-section" id="tableSection" style="display: none;">
+            <div class="section-header">
+                <span style="font-size: 2em;">💊</span>
+                <h3>Pesticide Recommendations</h3>
+            </div>
+            <div id="pesticidesContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewImage = document.getElementById('previewImage');
+        const classifyBtn = document.getElementById('classifyBtn');
+        const loading = document.getElementById('loading');
+        const resultsInfoSection = document.getElementById('resultsInfoSection');
+        const tableSection = document.getElementById('tableSection');
+        const pestInfoCard = document.getElementById('pestInfoCard');
+
+        // Click to upload
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                handleFile(files[0]);
+            }
+        });
+
+        // File input change
+        fileInput.addEventListener('change', (e) => {
+            if (e.target.files.length > 0) {
+                handleFile(e.target.files[0]);
+            }
+        });
+
+        function handleFile(file) {
+            if (!file.type.match('image.*')) {
+                alert('Please upload an image file');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                previewImage.src = e.target.result;
+                previewImage.style.display = 'block';
+                classifyBtn.disabled = false;
+                resultsInfoSection.style.display = 'none';
+                tableSection.style.display = 'none';
+            };
+            reader.readAsDataURL(file);
+        }
+
+        classifyBtn.addEventListener('click', async () => {
+            const file = fileInput.files[0];
+            if (!file) return;
+
+            const formData = new FormData();
+            formData.append('file', file);
+
+            loading.style.display = 'block';
+            classifyBtn.disabled = true;
+            resultsInfoSection.style.display = 'none';
+            tableSection.style.display = 'none';
+
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (data.success) {
+                    displayResults(data);
+                } else {
+                    alert('Error: ' + (data.error || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error: ' + error.message);
+            } finally {
+                loading.style.display = 'none';
+                classifyBtn.disabled = false;
+            }
+        });
+
+        function displayResults(data) {
+            // Use display name if available, otherwise use predicted_class
+            const displayName = data.predicted_display_name || data.predicted_class;
+            document.getElementById('predictedClass').textContent = displayName;
+            document.getElementById('confidence').textContent = `${data.confidence.toFixed(2)}% Confidence`;
+
+            // Show results section
+            resultsInfoSection.style.display = 'flex';
+
+            // Display responsible pest/insect if available
+            if (data.responsible_pest) {
+                // Determine if responsible_pest is a string or object
+                let pestName = '';
+                let pestImages = [];
+                
+                if (typeof data.responsible_pest === 'string') {
+                    pestName = data.responsible_pest;
+                } else if (typeof data.responsible_pest === 'object') {
+                    pestName = data.responsible_pest.name || '';
+                    
+                    // Handle both single image and multiple images
+                    if (data.responsible_pest.images && Array.isArray(data.responsible_pest.images)) {
+                        pestImages = data.responsible_pest.images;
+                    } else if (data.responsible_pest.image) {
+                        pestImages = [data.responsible_pest.image];
+                    }
+                }
+                
+                // Update pest information
+                document.getElementById('pestName').textContent = pestName;
+                
+                if (pestImages.length > 0) {
+                    const pestImageWrapper = document.getElementById('pestImageWrapper');
+                    pestImageWrapper.innerHTML = ''; // Clear previous images
+                    
+                    // Display all images
+                    pestImages.forEach((imgFile, index) => {
+                        const imgContainer = document.createElement('div');
+                        imgContainer.style.display = 'inline-block';
+                        imgContainer.style.marginRight = '10px';
+                        
+                        const img = document.createElement('img');
+                        img.src = `/static/pest_images/${imgFile}`;
+                        img.alt = pestName;
+                        img.style.width = '80px';
+                        img.style.height = '80px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '10px';
+                        img.style.border = '2px solid rgba(239, 68, 68, 0.6)';
+                        
+                        // Handle image load error
+                        img.onerror = function() {
+                            if (index === 0) {
+                                // Show emoji only for first image failure
+                                imgContainer.innerHTML = '<div style="font-size: 4em;">🐛</div>';
+                            } else {
+                                imgContainer.remove();
+                            }
+                        };
+                        
+                        imgContainer.appendChild(img);
+                        pestImageWrapper.appendChild(imgContainer);
+                    });
+                } else {
+                    document.getElementById('pestImageWrapper').innerHTML = '<div style="font-size: 4em;">🐛</div>';
+                }
+                
+                pestInfoCard.style.display = 'block';
+            } else {
+                pestInfoCard.style.display = 'none';
+            }
+
+            // Display pesticide recommendations table
+            const pesticidesContainer = document.getElementById('pesticidesContainer');
+            const recommendations = data.pesticide_recommendations;
+
+            if (recommendations && recommendations.length > 0) {
+                tableSection.style.display = 'block';
+                
+                // Create table
+                let tableHTML = `
+                    <div class="pesticide-table-container">
+                        <table class="pesticide-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 5%;">#</th>
+                                    <th style="width: 20%;">Pesticide Name</th>
+                                    <th style="width: 15%;">Target</th>
+                                    <th style="width: 25%;">Ingredients</th>
+                                    <th style="width: 15%;">Dosage</th>
+                                    <th style="width: 10%;">Type</th>
+                                    <th style="width: 10%;">Category</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                `;
+
+                recommendations.forEach((rec, index) => {
+                    let typeClass = 'table-type-chemical';
+                    if (rec.type.toLowerCase() === 'bio') typeClass = 'table-type-bio';
+                    if (rec.type.toLowerCase() === 'organic') typeClass = 'table-type-organic';
+
+                    tableHTML += `
+                        <tr>
+                            <td style="text-align: center; color: #22c55e; font-weight: 700;">${index + 1}</td>
+                            <td class="table-pesticide-name">🌿 ${rec.pesticide_name}</td>
+                            <td>${rec.insect_name || '-'}</td>
+                            <td style="font-size: 0.9em;">${rec.ingredients || '-'}</td>
+                            <td><strong style="color: #22c55e;">${rec.quantity}</strong></td>
+                            <td><span class="table-type-badge ${typeClass}">${rec.type}</span></td>
+                            <td style="font-size: 0.9em;">${rec.disease_type || '-'}</td>
+                        </tr>
+                    `;
+                });
+
+                tableHTML += `
+                            </tbody>
+                        </table>
+                    </div>
+                    <div style="text-align: center; margin-top: 15px; color: #aaa; font-size: 0.9em;">
+                        📊 Total: <strong style="color: #22c55e;">${recommendations.length}</strong> pesticide recommendations
+                    </div>
+                `;
+
+                pesticidesContainer.innerHTML = tableHTML;
+            } else {
+                tableSection.style.display = 'none';
+            }
+
+            // Scroll to results
+            resultsInfoSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 25; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 20 + 5 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = Math.random() * 10 + 15 + 's';
+            particlesContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>

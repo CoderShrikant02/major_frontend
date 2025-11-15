@@ -1,0 +1,9 @@
+{
+  "method": "xception.preprocess_input",
+  "input_size": [
+    299,
+    299
+  ],
+  "channel_order": "RGB",
+  "scale": "model-specific (Xception expects inputs preprocessed with xception.preprocess_input)"
+}

@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍅 TomatoCare - Detect Tomato Leaf Diseases Instantly</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #fff;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .background {
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a0a2e 50%, #0f3460 100%);
+            z-index: -2;
+        }
+
+        .particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        .particle {
+            position: absolute;
+            background: radial-gradient(circle, #16a34a 0%, transparent 70%);
+            border-radius: 50%;
+            animation: float 20s infinite;
+            opacity: 0.3;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(50px, -50px) rotate(90deg); }
+            50% { transform: translate(-50px, -100px) rotate(180deg); }
+            75% { transform: translate(-100px, 50px) rotate(270deg); }
+        }
+
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 50px;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid rgba(22, 163, 74, 0.3);
+        }
+
+        .logo {
+            font-size: 2em;
+            font-weight: bold;
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(22, 163, 74, 0.5);
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 20px;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-weight: 600;
+        }
+
+        .btn-login {
+            background: transparent;
+            color: #16a34a;
+            border: 2px solid #16a34a;
+        }
+
+        .btn-login:hover {
+            background: #16a34a;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(22, 163, 74, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #16a34a, #22c55e);
+            color: #fff;
+            box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
+        }
+
+        .btn-register:hover {
+            box-shadow: 0 0 40px rgba(22, 163, 74, 0.8);
+            transform: translateY(-3px) scale(1.05);
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4em;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #fff, #16a34a, #22c55e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glow 3s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { filter: drop-shadow(0 0 10px rgba(22, 163, 74, 0.5)); }
+            50% { filter: drop-shadow(0 0 30px rgba(22, 163, 74, 0.8)); }
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin-bottom: 40px;
+            color: #aaa;
+        }
+
+        .tomato-logo {
+            font-size: 10em;
+            animation: bounce 2s infinite;
+            filter: drop-shadow(0 0 30px rgba(22, 163, 74, 0.6));
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px); }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 100px 50px;
+            background: rgba(10, 10, 10, 0.5);
+        }
+
+        .features h2 {
+            text-align: center;
+            font-size: 3em;
+            margin-bottom: 60px;
+            background: linear-gradient(135deg, #fff, #16a34a);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .feature-card {
+            background: linear-gradient(145deg, rgba(22, 163, 74, 0.1), rgba(15, 52, 96, 0.1));
+            border: 2px solid rgba(22, 163, 74, 0.3);
+            border-radius: 20px;
+            padding: 40px;
+            text-align: center;
+            transition: all 0.5s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(22, 163, 74, 0.1), transparent);
+            transform: rotate(45deg);
+            transition: all 0.5s;
+        }
+
+        .feature-card:hover::before {
+            animation: shine 1.5s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .feature-card:hover {
+            transform: translateY(-15px) rotateX(10deg);
+            box-shadow: 0 20px 60px rgba(22, 163, 74, 0.4);
+            border-color: #16a34a;
+        }
+
+        .feature-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.6));
+        }
+
+        .feature-card h3 {
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            color: #22c55e;
+        }
+
+        .feature-card p {
+            color: #ccc;
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer {
+            text-align: center;
+            padding: 40px;
+            background: rgba(10, 10, 10, 0.9);
+            border-top: 1px solid rgba(22, 163, 74, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.5em; }
+            .hero p { font-size: 1.2em; }
+            .tomato-logo { font-size: 6em; }
+            nav { padding: 15px 20px; }
+            .features { padding: 50px 20px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="background"></div>
+    <div class="particles" id="particles"></div>
+
+    <nav>
+        <div class="logo">🍅 TomatoCare</div>
+        <div class="nav-buttons">
+            <a href="{{ url_for('login') }}" class="btn btn-login">Login</a>
+            <a href="{{ url_for('register') }}" class="btn btn-register">Register</a>
+        </div>
+    </nav>
+
+    <section class="hero">
+        <div class="tomato-logo">🍅</div>
+        <h1>Detect Tomato Leaf Diseases Instantly</h1>
+        <p>AI-Powered Disease Detection & Pesticide Recommendations</p>
+        <div class="nav-buttons" style="justify-content: center;">
+            <a href="{{ url_for('register') }}" class="btn btn-register" style="font-size: 1.2em; padding: 15px 40px;">Get Started</a>
+        </div>
+    </section>
+
+    <section class="features">
+        <h2>Powerful Features</h2>
+        <div class="feature-grid">
+            <div class="feature-card">
+                <div class="feature-icon">📸</div>
+                <h3>Image Classification</h3>
+                <p>Upload tomato leaf images and get instant disease detection with AI-powered accuracy</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">🐛</div>
+                <h3>Pest Detection</h3>
+                <p>Identify common pests affecting your tomato plants with advanced computer vision</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">💊</div>
+                <h3>Pesticide Recommendation</h3>
+                <p>Get personalized treatment suggestions and organic solutions for detected diseases</p>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <p>&copy; 2025 TomatoCare. All rights reserved.</p>
+    </footer>
+
+    <script>
+        // Create floating particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 30; i++) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.style.width = Math.random() * 20 + 5 + 'px';
+            particle.style.height = particle.style.width;
+            particle.style.left = Math.random() * 100 + '%';
+            particle.style.top = Math.random() * 100 + '%';
+            particle.style.animationDelay = Math.random() * 20 + 's';
+            particle.style.animationDuration = Math.random() * 10 + 15 + 's';
+            particlesContainer.appendChild(particle);
+        }
+    </script>
+</body>
+</html>

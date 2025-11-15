@@ -1,0 +1,600 @@
+{
+  "Tomato___Tomato_Yellow_Leaf_Curl_Virus": [
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Pyron (Vector Control)",
+      "ingredients": "Pyriproxyfen 5% and Diafenthiuron 25% SE",
+      "quantity": "400 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Antivirus (Virus Control)",
+      "ingredients": "",
+      "quantity": "500 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Decis",
+      "ingredients": "Deltamethrin 2.8% EC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Hostathian",
+      "ingredients": "Triazophos 40% EC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Karate",
+      "ingredients": "Lambda-cyhalothrin 5% EC",
+      "quantity": "0.5ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Pride/ Rekord",
+      "ingredients": "Acetamiprid 20% SP",
+      "quantity": "0.2g per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Beauveria Bassiana",
+      "ingredients": "",
+      "quantity": "1 to 2 liter per acre",
+      "type": "BIO",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Verticillium lecanii",
+      "ingredients": "",
+      "quantity": "1 to 2 liter per acre",
+      "type": "BIO",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "3 IN 1 PEST CONTROLLER",
+      "ingredients": "",
+      "quantity": "2ml per liter",
+      "type": "Organic",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Sarvashakti",
+      "ingredients": "",
+      "quantity": "200 - 400ml per Acre",
+      "type": "Organic",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "TRIPLE ATTACK",
+      "ingredients": "",
+      "quantity": "1 to 2 liter per acre",
+      "type": "BIO",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Ashwamedh",
+      "ingredients": "Diafenthiuron 50% WP",
+      "quantity": "250g per Acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Nashak",
+      "ingredients": "Fipronil 40% + Imidacloprid 40% WG",
+      "quantity": "6 - 7g per 15 liters",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "IMD-178",
+      "ingredients": "Imidacloprid 17.8% SL",
+      "quantity": "100 - 150ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Chalrawarti",
+      "ingredients": "Thiamethoxam 12.6% + Lambda Cyhalothrin 9.5% ZC",
+      "quantity": "60 - 80ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "OZIL",
+      "ingredients": "Spiromesifen 22.9% SC",
+      "quantity": "200 - 250ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "FANTASY PLUS",
+      "ingredients": "Fipronil 4% + Acetamiprid 4% SC",
+      "quantity": "2ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Thioxam",
+      "ingredients": "Thiamethoxam 30 % FS",
+      "quantity": "35 - 40ml per litre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Roger",
+      "ingredients": "Dimethoate 30% EC",
+      "quantity": "1ml per litre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "DON-3G",
+      "ingredients": "Carbofuran 3% CG",
+      "quantity": "16kg per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "MAL-50",
+      "ingredients": "Malathion 50% EC",
+      "quantity": "250- 300ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "White Flies (Bemisia Tabacci)",
+      "pesticide_name": "Diamide",
+      "ingredients": "Cyantraniliprole 10.26% OD",
+      "quantity": "1.8ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    }
+  ],
+  "Leaf Miner": [
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Katyayani Demat",
+      "ingredients": "Dimethoate 30% EC",
+      "quantity": "300 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Decis",
+      "ingredients": "Deltamethrin 2.8% EC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Cal-MB",
+      "ingredients": "Organic based product",
+      "quantity": "1-2ml/ltr",
+      "type": "Organic",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Hostathian",
+      "ingredients": "Triazophos 40% EC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Spark",
+      "ingredients": "Deltamethrin + Triazophos 1%+35%",
+      "quantity": "1.5ml per litre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Katyayani Spino 45",
+      "ingredients": "Spinosad 45% SC",
+      "quantity": "60-90 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Katyayani KACIN",
+      "ingredients": "Abamectin 1.9% EC",
+      "quantity": "150 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Diamide",
+      "ingredients": "Cyantraniliprole 10.26% OD",
+      "quantity": "1.8ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Leaf Miner",
+      "pesticide_name": "Kacin",
+      "ingredients": "Abamectin 1.9% EC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    }
+  ],
+  "Spotted Wilt Virus": [
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "Furadon/Tata Furan",
+      "ingredients": "Carbofuron 3%G",
+      "quantity": "5 kg per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "Karate",
+      "ingredients": "Lambda-cyhalothrin 5% EC",
+      "quantity": "0.5ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "Pride/ Rekord",
+      "ingredients": "Acetamiprid 20% SP",
+      "quantity": "0.2g per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "Biocatch",
+      "ingredients": "verticillium lecani",
+      "quantity": "2g per liter",
+      "type": "Organic",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "Diamide",
+      "ingredients": "Cyantraniliprole 10.26% OD",
+      "quantity": "1.8ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "Texan PW",
+      "ingredients": "70% thiamethoxam",
+      "quantity": "40-60gm per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Thrips",
+      "pesticide_name": "IMD-178",
+      "ingredients": "Imidacloprid 17.8% SL",
+      "quantity": "100 - 150ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    }
+  ],
+  "Tomato___Early_blight": [
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "DR BLIGHT",
+      "ingredients": "Metalaxyl 3.3% + Chlorothalonil 33.1% SC",
+      "quantity": "300 - 400ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "COC 50",
+      "ingredients": "Copper Oxychloride 50% WP",
+      "quantity": "2g per Liter",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "CHATUR",
+      "ingredients": "Mancozeb 40% + Azoxystrobin 7% OS",
+      "quantity": "600ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "PETER",
+      "ingredients": "Thifluzamide 24% SC",
+      "quantity": "150ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "AZOZOLE",
+      "ingredients": "Azoxystrobin 18.2% + Difenoconazole 11.4% SC",
+      "quantity": "150 200ml per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "SAMARTHA",
+      "ingredients": "Carbendazim 12% + Mancozeb 63% WP",
+      "quantity": "300 - 400g per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "META MANCO",
+      "ingredients": "Metalaxyl 8% + Mancozeb 64% WP",
+      "quantity": "500g per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "Rovral",
+      "ingredients": "Iprodione 50 WP",
+      "quantity": "1g per liter",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "Katyayani Mycinmax",
+      "ingredients": "Kasugamycin 3% SL",
+      "quantity": "400- 500ml per Acre with 200 L of water per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Alternaria solani",
+      "pesticide_name": "COC50",
+      "ingredients": "Copper oxychloride 50 % wp",
+      "quantity": "1000gm per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    }
+  ],
+  "Tomato___Late_blight": [
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "Professor",
+      "ingredients": "Ametocitradin 27 + Dimethomorph 20.27 SC",
+      "quantity": "320 to 400 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "COC50",
+      "ingredients": "Copper oxychloride 50 % wp",
+      "quantity": "2gm/ltr",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "All In one",
+      "ingredients": "",
+      "quantity": "1.5 - 2 GM / Ltr",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "Dismiss",
+      "ingredients": "Dimethomorph 50 % WP",
+      "quantity": "400 gms/ Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "Curzate M8",
+      "ingredients": "Cymoxanil + Mancozeb 8 % + 64 %",
+      "quantity": "3g per liter",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "Equation Pro",
+      "ingredients": "Famoxadone +Cymoxanil 16.6%+22.1%",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "Ridomil",
+      "ingredients": "Metalaxyl + Mancozeb 4%+ 64%",
+      "quantity": "1-1.5g per liter",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "Rovral",
+      "ingredients": "Iprodione 50 WP",
+      "quantity": "1g per liter",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "KZEB M-45",
+      "ingredients": "Mancozeb 75% WP",
+      "quantity": "Foliar Spray: 600 - 800 g per acre, diluted in 200 liters of water.",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    },
+    {
+      "insect_name": "Phytophthora infestans",
+      "pesticide_name": "COC50",
+      "ingredients": "Copper oxychloride 50 % wp",
+      "quantity": "1000gm per Acre",
+      "type": "Chemical",
+      "disease_type": "Fungal"
+    }
+  ],
+  "Tomato___Spider_mites Two-spotted_spider_mite": [
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Arima 30 SC",
+      "ingredients": "Cyenopyrafen (300 g/L)",
+      "quantity": "243 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Awash 1.8 EC",
+      "ingredients": "Abamectin (32 g/L, bio-derived) + inert",
+      "quantity": "51 ml per acre",
+      "type": "Bio",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Mercur 500 SC",
+      "ingredients": "Diafenthiuron (500 g/L)",
+      "quantity": "243 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Abema 3% EC",
+      "ingredients": "Abamectin (20 g/L) + Emamectin Benzoate (10 g/L)",
+      "quantity": "405 ml per acre",
+      "type": "Bio-chemical mix",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Hunter 40 EC",
+      "ingredients": "Acetamiprid (30 g/L, neonicotinoid) + Abamectin (10 g/L)",
+      "quantity": "202 ml per acre",
+      "type": "Chemical + Bio mix",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Alligator 1.9 EC",
+      "ingredients": "Emamectin Benzoate (19 g/L)",
+      "quantity": "202 ml per acre",
+      "type": "Semi-synthetic (Bio-derived but chemical formulation)",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Profenos 72 EC",
+      "ingredients": "Profenofos (72%)",
+      "quantity": "304 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "oberon",
+      "ingredients": "Spiromesifen 22.9% SC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Diafenthiuron 30 WP",
+      "ingredients": "Diafenthiuron",
+      "quantity": "12.1 g per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Magister",
+      "ingredients": "Fenazaquin 10%EC",
+      "quantity": "2.5ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Kacin",
+      "ingredients": "Abamectin 1.9% EC",
+      "quantity": "1ml per liter",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    },
+    {
+      "insect_name": "Red Spider MIte & Two Spotted Spider MIte",
+      "pesticide_name": "Foster Acaricide",
+      "ingredients": "Cyflumetofen 20%",
+      "quantity": "250-300 ml per acre",
+      "type": "Chemical",
+      "disease_type": "Insect Based"
+    }
+  ],
+  "Tomato___Bacterial_spot": [
+    {
+      "insect_name": "Xanthomonas",
+      "pesticide_name": "Kmycin",
+      "ingredients": "Streptomycin Sulphate 90% + Tetracycline Hydrochloride 10%",
+      "quantity": "6-12 gm in 60 L water",
+      "type": "Chemical",
+      "disease_type": "Bacteria Based"
+    },
+    {
+      "insect_name": "Xanthomonas",
+      "pesticide_name": "KZEB M-45",
+      "ingredients": "Mancozeb 75% WP",
+      "quantity": "Foliar Spray: 600 - 800 g per acre, diluted in 200 liters of water.",
+      "type": "Chemical",
+      "disease_type": "Bacteria Based"
+    },
+    {
+      "insect_name": "Xanthomonas",
+      "pesticide_name": "COC50",
+      "ingredients": "Copper oxychloride 50 % wp",
+      "quantity": "1000gm per Acre",
+      "type": "Chemical",
+      "disease_type": "Bacteria Based"
+    }
+  ]
+}

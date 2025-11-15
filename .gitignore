@@ -1,0 +1,104 @@
+# ---- Python bytecode and caches ----
+__pycache__/
+*.py[cod]
+*$py.class
+
+# ---- Virtual environments ----
+.venv/
+venv/
+env/
+ENV/
+.conda/
+
+# ---- Packaging / build artifacts ----
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# ---- Logs / DBs ----
+*.log
+*.sqlite3
+/db.sqlite3
+
+# ---- Test / Coverage ----
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# ---- Jupyter ----
+.ipynb_checkpoints/
+
+# ---- Type checkers ----
+.mypy_cache/
+.dmypy.json
+.pyre/
+.pytype/
+
+# ---- IDE / Editor ----
+.vscode/
+!.vscode/settings.json
+!.vscode/extensions.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea/
+*.sublime-workspace
+*.sublime-project
+
+# ---- OS files ----
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# ---- Temp / outputs ----
+/tmp/
+/temp/
+*.tmp
+outputs/
+runs/
+
+# ---- ML / Model artifacts ----
+*.h5
+*.hdf5
+*.keras
+*.pb
+*.tflite
+saved_model/
+checkpoints/
+
+ 
+
+# ---- Flask ----
+instance/
+*.pid
+
+# ---- Dotenv ----
+.env
+.env.*
+*.env
+
+# ---- Node (if present) ----
+node_modules/
+
+# ---- Visual Studio (Windows) ----
+.vs/
+
+# ---- OneDrive temp files ----
+~$*
