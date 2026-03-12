@@ -1,35 +1,41 @@
+import logging
+
 import mysql.connector
 from mysql.connector import Error
+
 from config import Config
 
+
+logger = logging.getLogger(__name__)
+
 def get_db_connection():
-    """Create and return a database connection"""
+    """Ye database sey connect karney key liye use kiya jata hai """
     try:
         connection = mysql.connector.connect(
-            host=Config.MYSQL_HOST,
-            user=Config.MYSQL_USER,
-            password=Config.MYSQL_PASSWORD,
-            database=Config.MYSQL_DB
+            host=Config.DB_HOST,
+            user=Config.DB_USER,
+            password=Config.DB_PASSWORD,
+            database=Config.DB_NAME
         )
         return connection
     except Error as e:
-        print(f"Error connecting to MySQL: {e}")
+        logger.error("Error connecting to MySQL: %s", e)
         return None
 
 def init_db():
-    """Initialize the database and create tables"""
+    """Iss function database initialize karney key liye use kiya jata hai """
     try:
         # Connect without database to create it
         connection = mysql.connector.connect(
-            host=Config.MYSQL_HOST,
-            user=Config.MYSQL_USER,
-            password=Config.MYSQL_PASSWORD
+            host=Config.DB_HOST,
+            user=Config.DB_USER,
+            password=Config.DB_PASSWORD
         )
         cursor = connection.cursor()
         
         # Create database if not exists
-        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {Config.MYSQL_DB}")
-        cursor.execute(f"USE {Config.MYSQL_DB}")
+        cursor.execute(f"CREATE DATABASE IF NOT EXISTS {Config.DB_NAME}")
+        cursor.execute(f"USE {Config.DB_NAME}")
         
         # Create users table
         cursor.execute("""
@@ -42,7 +48,7 @@ def init_db():
             )
         """)
         
-        # Create predictions table (optional - to store user predictions)
+        
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS predictions (
                 id INT AUTO_INCREMENT PRIMARY KEY,
@@ -58,11 +64,11 @@ def init_db():
         connection.commit()
         cursor.close()
         connection.close()
-        print("Database initialized successfully!")
+        logger.info("Database initialized successfully")
         return True
         
     except Error as e:
-        print(f"Error initializing database: {e}")
+        logger.error("Error initializing database: %s", e)
         return False
 
 if __name__ == "__main__":

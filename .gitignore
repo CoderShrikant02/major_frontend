@@ -102,3 +102,7 @@ node_modules/
 
 # ---- OneDrive temp files ----
 ~$*
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.*
