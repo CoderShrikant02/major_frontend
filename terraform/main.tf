@@ -2,14 +2,13 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-# Security Group
 resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
-  description = "Secure access for EC2 instance"
+  description = "Secure access"
 
-  # SSH (SECURE)
+  # SSH access (only your IP)
   ingress {
-    description = "SSH access from my IP"
+    description = "SSH"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -17,16 +16,17 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
-  # Flask App (PUBLIC)
+  # Flask access (only your IP)
   ingress {
-    description = "Flask app access"
+    description = "Flask App"
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
 
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["182.76.246.162/32"]
   }
 
+  # outbound internet access
   egress {
     from_port   = 0
     to_port     = 0
@@ -40,7 +40,6 @@ resource "aws_security_group" "secure_sg" {
   }
 }
 
-# EC2 Instance
 resource "aws_instance" "tomato_server" {
 
   ami           = "ami-0f5ee92e2d63afc18"
@@ -57,20 +56,22 @@ resource "aws_instance" "tomato_server" {
   }
 
   user_data = <<-EOF
-              #!/bin/bash
-              apt update -y
-              apt install -y python3-pip git
+#!/bin/bash
+exec > /var/log/user-data.log 2>&1
 
-              cd /home/ubuntu
+apt-get update -y
+apt-get install -y git python3-pip
 
-              git clone https://github.com/CoderShrikant02/major_frontend.git
+cd /home/ubuntu
 
-              cd major_frontend
+git clone https://github.com/CoderShrikant02/major_frontend.git
 
-              pip3 install -r requirements.txt
+cd major_frontend
 
-              nohup python3 app.py --host 0.0.0.0 --port 5000 > app.log 2>&1 &
-              EOF
+pip3 install -r requirements.txt
+
+nohup python3 app.py --host 0.0.0.0 --port 5000 > flask.log 2>&1 &
+EOF
 
   tags = {
     Name = "tomato-ai-server"
