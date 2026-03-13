@@ -2,15 +2,14 @@ provider "aws" {
   region = "ap-south-1"
 }
 
-# -----------------------------
 # Security Group
-# -----------------------------
 resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
   description = "Secure access for EC2 instance"
 
+  # SSH (SECURE)
   ingress {
-    description = "SSH access from my IP only"
+    description = "SSH access from my IP"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -18,8 +17,9 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
+  # Flask App (PUBLIC)
   ingress {
-    description = "Flask App Access"
+    description = "Flask app access"
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
@@ -40,9 +40,7 @@ resource "aws_security_group" "secure_sg" {
   }
 }
 
-# -----------------------------
 # EC2 Instance
-# -----------------------------
 resource "aws_instance" "tomato_server" {
 
   ami           = "ami-0f5ee92e2d63afc18"
@@ -58,10 +56,8 @@ resource "aws_instance" "tomato_server" {
     encrypted = true
   }
 
-  # Auto Deploy App
   user_data = <<-EOF
               #!/bin/bash
-
               apt update -y
               apt install -y python3-pip git
 
@@ -74,7 +70,6 @@ resource "aws_instance" "tomato_server" {
               pip3 install -r requirements.txt
 
               nohup python3 app.py --host 0.0.0.0 --port 5000 > app.log 2>&1 &
-
               EOF
 
   tags = {
