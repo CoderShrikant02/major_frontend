@@ -6,7 +6,7 @@ resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
   description = "Secure EC2 access"
 
-  # SSH only from your IP
+  # SSH access only from your IP
   ingress {
     description = "SSH from my IP"
     from_port   = 22
@@ -24,17 +24,17 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
-  # Allow HTTPS only to required services
+  # Restricted outbound HTTPS access
   egress {
-    description = "Allow GitHub + Ubuntu repo"
+    description = "Allow GitHub and Ubuntu repo"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
 
     cidr_blocks = [
-      "140.82.112.0/20",  # GitHub
-      "185.199.108.0/22", # GitHub CDN
-      "91.189.88.0/21"    # Ubuntu repositories
+      "140.82.112.0/20",   # GitHub
+      "185.199.108.0/22",  # GitHub CDN
+      "91.189.88.0/21"     # Ubuntu repositories
     ]
   }
 
