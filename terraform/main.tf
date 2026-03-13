@@ -6,7 +6,6 @@ resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
   description = "Secure EC2 access"
 
-  # SSH access only from your IP
   ingress {
     description = "SSH from my IP"
     from_port   = 22
@@ -15,7 +14,6 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
-  # Flask access only from your IP
   ingress {
     description = "Flask from my IP"
     from_port   = 5000
@@ -24,9 +22,9 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
-  # outbound restricted to your IP instead of internet
+  # restricted outbound
   egress {
-    description = "Restricted outbound HTTPS"
+    description = "HTTPS outbound"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
@@ -39,25 +37,40 @@ resource "aws_security_group" "secure_sg" {
 }
 
 resource "aws_instance" "tomato_server" {
+
   ami           = "ami-0f5ee92e2d63afc18"
   instance_type = "t3.micro"
 
   vpc_security_group_ids = [aws_security_group.secure_sg.id]
 
-  # enforce IMDSv2
+  associate_public_ip_address = true
+
   metadata_options {
     http_endpoint = "enabled"
     http_tokens   = "required"
   }
 
-  # encrypted root disk
   root_block_device {
-    encrypted = true
+    encrypted   = true
     volume_size = 20
   }
 
-  # disable public IP to reduce attack surface
-  associate_public_ip_address = false
+  user_data = <<-EOF
+#!/bin/bash
+apt update -y
+apt install -y git docker.io
+
+systemctl start docker
+systemctl enable docker
+
+cd /home/ubuntu
+git clone https://github.com/CoderShrikant02/major_frontend.git
+
+cd major_frontend
+
+docker build -t tomato-ai .
+docker run -d -p 5000:5000 tomato-ai
+EOF
 
   tags = {
     Name = "tomato-ai-server"
