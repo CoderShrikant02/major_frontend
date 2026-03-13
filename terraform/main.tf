@@ -6,6 +6,7 @@ resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
   description = "Secure EC2 access"
 
+  # SSH only from your IP
   ingress {
     description = "SSH from my IP"
     from_port   = 22
@@ -14,21 +15,27 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
+  # Flask app access
   ingress {
-    description = "Flask app access"
+    description = "Flask access"
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
     cidr_blocks = ["182.76.246.162/32"]
   }
 
-  # restricted outbound
+  # Allow HTTPS only to required services
   egress {
-    description = "HTTPS outbound"
+    description = "Allow GitHub + Ubuntu repo"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+
+    cidr_blocks = [
+      "140.82.112.0/20",  # GitHub
+      "185.199.108.0/22", # GitHub CDN
+      "91.189.88.0/21"    # Ubuntu repositories
+    ]
   }
 
   tags = {
@@ -58,10 +65,9 @@ resource "aws_instance" "tomato_server" {
   user_data = <<-EOF
 #!/bin/bash
 
-# log everything
 exec > /var/log/user-data.log 2>&1
 
-echo "Starting setup..."
+echo "Starting EC2 setup..."
 
 apt-get update -y
 apt-get install -y git docker.io
@@ -71,7 +77,7 @@ systemctl enable docker
 
 cd /home/ubuntu
 
-echo "Cloning repo..."
+echo "Cloning repository..."
 git clone https://github.com/CoderShrikant02/major_frontend.git
 
 cd major_frontend
@@ -82,7 +88,7 @@ docker build -t tomato-ai .
 echo "Running container..."
 docker run -d -p 5000:5000 tomato-ai
 
-echo "Setup complete"
+echo "Deployment finished"
 EOF
 
   tags = {
