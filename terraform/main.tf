@@ -11,16 +11,14 @@ resource "aws_security_group" "secure_sg" {
     to_port     = 22
     protocol    = "tcp"
 
-    # Restrict to your IP instead of 0.0.0.0/0
     cidr_blocks = ["182.76.246.162/32"]
   }
 
   egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
 
-    # restricted egress
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
