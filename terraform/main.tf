@@ -4,11 +4,11 @@ provider "aws" {
 
 resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
-  description = "Secure access"
+  description = "Secure EC2 access"
 
-  # SSH access (only your IP)
+  # SSH only from your IP
   ingress {
-    description = "SSH"
+    description = "SSH from my IP"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
@@ -16,23 +16,14 @@ resource "aws_security_group" "secure_sg" {
     cidr_blocks = ["182.76.246.162/32"]
   }
 
-  # Flask access (only your IP)
+  # Flask access only from your IP
   ingress {
-    description = "Flask App"
+    description = "Flask access"
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
 
     cidr_blocks = ["182.76.246.162/32"]
-  }
-
-  # outbound internet access
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-
-    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
