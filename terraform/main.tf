@@ -3,23 +3,29 @@ provider "aws" {
 }
 
 resource "aws_security_group" "secure_sg" {
-  name = "secure-security-group"
+  name        = "secure-security-group"
+  description = "Secure security group for EC2"
 
   ingress {
-    description = "SSH access"
+    description = "SSH access from my IP only"
     from_port   = 22
     to_port     = 22
     protocol    = "tcp"
 
-    cidr_blocks = ["182.76.246.162/32"]
+    cidr_blocks = ["182.76.246.162/32"]   # your public IP
   }
 
   egress {
+    description = "Allow HTTPS outbound only"
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
 
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = ["182.76.246.162/32"]   # restricted outbound
+  }
+
+  tags = {
+    Name = "secure-sg"
   }
 }
 
