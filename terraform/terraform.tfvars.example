@@ -2,6 +2,11 @@ admin_cidr      = "182.76.246.162/32"
 app_port        = 5000
 github_branch   = "main"
 github_repo_url = "https://github.com/CoderShrikant02/major_frontend.git"
+app_secret_key  = "replace-me"
+db_host         = "localhost"
+db_user         = "root"
+db_password     = "replace-me"
+db_name         = "tomato_disease_db"
 
 github_egress_cidrs = [
   "140.82.112.0/20",

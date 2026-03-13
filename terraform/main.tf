@@ -30,6 +30,34 @@ variable "github_branch" {
   default     = "main"
 }
 
+variable "app_secret_key" {
+  description = "Flask SECRET_KEY passed to the container"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_host" {
+  description = "Database host passed to the container"
+  type        = string
+}
+
+variable "db_user" {
+  description = "Database user passed to the container"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_password" {
+  description = "Database password passed to the container"
+  type        = string
+  sensitive   = true
+}
+
+variable "db_name" {
+  description = "Database name passed to the container"
+  type        = string
+}
+
 variable "github_egress_cidrs" {
   description = "GitHub IPv4 CIDRs used for restricted HTTPS egress"
   type        = list(string)
@@ -121,6 +149,7 @@ REPO_BRANCH="${var.github_branch}"
 IMAGE_NAME="tomato-ai"
 CONTAINER_NAME="tomato-ai"
 APP_PORT="${var.app_port}"
+APP_ENV_FILE="/opt/tomato-ai.env"
 
 retry() {
   local attempts="$1"
@@ -157,6 +186,16 @@ usermod -aG docker ubuntu || true
 mkdir -p "$${APP_DIR}"
 chown ubuntu:ubuntu "$${APP_DIR}"
 
+cat >"$${APP_ENV_FILE}" <<ENVVARS
+SECRET_KEY=${var.app_secret_key}
+DB_HOST=${var.db_host}
+DB_USER=${var.db_user}
+DB_PASSWORD=${var.db_password}
+DB_NAME=${var.db_name}
+ENVVARS
+
+chmod 600 "$${APP_ENV_FILE}"
+
 if [ -d "$${APP_DIR}/.git" ]; then
   git -C "$${APP_DIR}" fetch --all --prune
   git -C "$${APP_DIR}" checkout "$${REPO_BRANCH}"
@@ -175,8 +214,13 @@ fi
 docker run -d \
   --name "$${CONTAINER_NAME}" \
   --restart unless-stopped \
+  --env-file "$${APP_ENV_FILE}" \
   -p "$${APP_PORT}:$${APP_PORT}" \
   "$${IMAGE_NAME}"
+
+sleep 15
+docker ps --filter "name=^$${CONTAINER_NAME}$"
+docker logs "$${CONTAINER_NAME}" --tail 50 || true
 
 echo "Deployment finished successfully"
 EOF
