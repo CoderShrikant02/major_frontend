@@ -15,7 +15,7 @@ resource "aws_security_group" "secure_sg" {
   }
 
   ingress {
-    description = "Flask from my IP"
+    description = "Flask app access"
     from_port   = 5000
     to_port     = 5000
     protocol    = "tcp"
@@ -28,7 +28,7 @@ resource "aws_security_group" "secure_sg" {
     from_port   = 443
     to_port     = 443
     protocol    = "tcp"
-    cidr_blocks = ["182.76.246.162/32"]
+    cidr_blocks = ["0.0.0.0/0"]
   }
 
   tags = {
@@ -57,19 +57,32 @@ resource "aws_instance" "tomato_server" {
 
   user_data = <<-EOF
 #!/bin/bash
-apt update -y
-apt install -y git docker.io
+
+# log everything
+exec > /var/log/user-data.log 2>&1
+
+echo "Starting setup..."
+
+apt-get update -y
+apt-get install -y git docker.io
 
 systemctl start docker
 systemctl enable docker
 
 cd /home/ubuntu
+
+echo "Cloning repo..."
 git clone https://github.com/CoderShrikant02/major_frontend.git
 
 cd major_frontend
 
+echo "Building docker image..."
 docker build -t tomato-ai .
+
+echo "Running container..."
 docker run -d -p 5000:5000 tomato-ai
+
+echo "Setup complete"
 EOF
 
   tags = {
