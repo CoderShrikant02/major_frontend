@@ -143,7 +143,8 @@ retry() {
 }
 
 retry 5 apt-get update -y
-retry 5 apt-get install -y --no-install-recommends ca-certificates curl git docker.io docker-compose-plugin
+# Use Ubuntu repo packages for reliability.
+retry 5 apt-get install -y --no-install-recommends ca-certificates curl git docker.io docker-compose
 
 systemctl enable --now docker
 usermod -aG docker ubuntu || true
@@ -169,12 +170,12 @@ MYSQL_DATABASE=${var.db_name}
 ENVFILE
 
 cd "$${APP_DIR}"
-docker compose down || true
-docker compose up -d --build
+docker-compose down || true
+docker-compose up -d --build
 
 sleep 20
-docker compose ps
-docker compose logs --tail 50 || true
+docker-compose ps
+docker-compose logs --tail 50 || true
 EOF
 
   tags = {
