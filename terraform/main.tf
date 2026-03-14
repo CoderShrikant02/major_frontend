@@ -15,7 +15,7 @@ variable "admin_cidr" {
 variable "app_port" {
   description = "Application port exposed publicly"
   type        = number
-  default     = 5000
+  default     = 80
 }
 
 variable "instance_type" {
@@ -182,6 +182,7 @@ git -C "$${APP_DIR}" rev-parse HEAD || true
 ls -lh "$${APP_DIR}/tomato_leaf_hybrid_eff_final_disease" || true
 
 cat >"$${APP_DIR}/.env" <<ENVFILE
+APP_HOST_PORT=${var.app_port}
 SECRET_KEY=${var.app_secret_key}
 DB_HOST=db
 DB_USER=root
