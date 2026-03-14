@@ -1,5 +1,6 @@
 import base64
 import json
+import sys
 from functools import wraps
 from io import BytesIO
 from pathlib import Path
@@ -40,7 +41,6 @@ def validate_startup():
         raise RuntimeError(f"Missing required environment variables: {', '.join(missing_env)}")
 
     required_paths = [
-        Path("tomato_leaf_hybrid_eff_final_disease"),
         Path("class_indices.json"),
         Path("preprocess_info.json"),
         Path("responsible_insects.json"),
@@ -51,6 +51,17 @@ def validate_startup():
     if missing_paths:
         raise RuntimeError(f"Missing required startup files: {', '.join(missing_paths)}")
 
+    # Model artifacts are large and may be delivered separately (e.g. LFS/S3).
+    # Don't crash the whole service if they're missing; predictions will be disabled.
+    model_dir = Path("tomato_leaf_hybrid_eff_final_disease")
+    weights_file = model_dir / "model.weights.h5"
+    if not model_dir.exists() or not weights_file.exists():
+        print(
+            "WARNING: Model artifacts missing; service will start but /predict will not work. "
+            f"Expected: {weights_file}",
+            file=sys.stderr,
+        )
+
 
 #ye model ko load karta hai aur uskey sathmetadata bhi load karta hai 
 def load_model_and_metadata():
@@ -58,14 +69,23 @@ def load_model_and_metadata():
     global model, index_to_class, preprocess_info, pesticide_recommendations, responsible_insects, display_names
 
     try:
-        model = keras.models.load_model("tomato_leaf_hybrid_eff_final_disease")
-
         with open("class_indices.json", "r", encoding="utf-8") as f:
             class_indices = json.load(f)
         index_to_class = {v: k for k, v in class_indices.items()}
 
         with open("preprocess_info.json", "r", encoding="utf-8") as f:
             preprocess_info = json.load(f)
+
+        try:
+            model_dir = Path("tomato_leaf_hybrid_eff_final_disease")
+            weights_file = model_dir / "model.weights.h5"
+            if model_dir.exists() and weights_file.exists():
+                model = keras.models.load_model(str(model_dir))
+            else:
+                model = None
+        except Exception as e:
+            model = None
+            print(f"WARNING: Failed to load model; predictions disabled: {e}", file=sys.stderr)
 
         try:
             with open("responsible_insects.json", "r", encoding="utf-8") as f:
@@ -136,7 +156,7 @@ def landing():
 #ye health check karney key liye 
 @app.route("/health")
 def health():
-    return {"status": "ok"}, 200
+    return {"status": "ok", "model_loaded": model is not None}, 200
 
 
 #ye login karmey key liye
@@ -243,6 +263,9 @@ def logout():
 def predict():
 
     try:
+        if model is None:
+            return jsonify({"success": False, "error": "Model not available on server"}), 503
+
         if "file" not in request.files:
             return jsonify({"success": False, "error": "No file uploaded"}), 400
 
