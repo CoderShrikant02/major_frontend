@@ -30,6 +30,11 @@ variable "github_branch" {
   default     = "main"
 }
 
+variable "ssh_key_name" {
+  description = "EC2 Key Pair name to attach to the instance (must match the PEM used by Jenkins Verify stage)"
+  type        = string
+}
+
 variable "app_secret_key" {
   description = "Flask secret key"
   type        = string
@@ -101,6 +106,7 @@ resource "aws_instance" "tomato_server" {
   vpc_security_group_ids      = [aws_security_group.secure_sg.id]
   associate_public_ip_address = true
   user_data_replace_on_change = true
+  key_name                    = var.ssh_key_name
 
   metadata_options {
     http_endpoint = "enabled"
