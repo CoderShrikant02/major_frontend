@@ -18,6 +18,12 @@ variable "app_port" {
   default     = 5000
 }
 
+variable "instance_type" {
+  description = "EC2 instance type (t3.micro may be too small to build/run TensorFlow)"
+  type        = string
+  default     = "t3.small"
+}
+
 variable "github_repo_url" {
   description = "HTTPS Git repository URL"
   type        = string
@@ -101,7 +107,7 @@ resource "aws_security_group" "secure_sg" {
 
 resource "aws_instance" "tomato_server" {
   ami           = "ami-0f5ee92e2d63afc18"
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
 
   vpc_security_group_ids      = [aws_security_group.secure_sg.id]
   associate_public_ip_address = true
@@ -115,7 +121,7 @@ resource "aws_instance" "tomato_server" {
 
   root_block_device {
     encrypted             = true
-    volume_size           = 20
+    volume_size           = 30
     volume_type           = "gp3"
     delete_on_termination = true
   }
@@ -141,6 +147,15 @@ retry() {
     sleep 10
   done
 }
+
+# Add swap to reduce OOM risk during Docker build (TensorFlow is heavy).
+if ! swapon --show | grep -q .; then
+  (fallocate -l 2G /swapfile || dd if=/dev/zero of=/swapfile bs=1M count=2048)
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+fi
 
 retry 5 apt-get update -y
 # Use Ubuntu repo packages for reliability.
