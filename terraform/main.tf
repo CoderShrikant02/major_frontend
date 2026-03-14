@@ -159,7 +159,7 @@ fi
 
 retry 5 apt-get update -y
 # Use Ubuntu repo packages for reliability.
-retry 5 apt-get install -y --no-install-recommends ca-certificates curl git docker.io docker-compose
+retry 5 apt-get install -y --no-install-recommends ca-certificates curl git git-lfs docker.io docker-compose
 
 systemctl enable --now docker
 usermod -aG docker ubuntu || true
@@ -173,6 +173,13 @@ if [ -d "$${APP_DIR}/.git" ]; then
 else
   git clone --branch "${var.github_branch}" --depth 1 "${var.github_repo_url}" "$${APP_DIR}"
 fi
+
+# Pull large model artifacts stored in Git LFS.
+git lfs install --system
+git -C "$${APP_DIR}" lfs pull
+
+git -C "$${APP_DIR}" rev-parse HEAD || true
+ls -lh "$${APP_DIR}/tomato_leaf_hybrid_eff_final_disease" || true
 
 cat >"$${APP_DIR}/.env" <<ENVFILE
 SECRET_KEY=${var.app_secret_key}

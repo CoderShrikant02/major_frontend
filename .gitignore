@@ -83,6 +83,9 @@ runs/
 saved_model/
 checkpoints/
 
+# Allow the runtime model weights (tracked via Git LFS).
+!tomato_leaf_hybrid_eff_final_disease/model.weights.h5
+
  
 
 # ---- Flask ----
