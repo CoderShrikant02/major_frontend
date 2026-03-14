@@ -137,7 +137,7 @@ retry() {
 }
 
 retry 5 apt-get update -y
-retry 5 apt-get install -y --no-install-recommends ca-certificates curl git docker.io docker-compose-v2
+retry 5 apt-get install -y --no-install-recommends ca-certificates curl git docker.io docker-compose-plugin
 
 systemctl enable --now docker
 usermod -aG docker ubuntu || true
@@ -155,13 +155,11 @@ fi
 cat >"$${APP_DIR}/.env" <<ENVFILE
 SECRET_KEY=${var.app_secret_key}
 DB_HOST=db
-DB_USER=${var.db_user}
-DB_PASSWORD=${var.db_password}
+DB_USER=root
+DB_PASSWORD=${var.db_root_password}
 DB_NAME=${var.db_name}
 MYSQL_ROOT_PASSWORD=${var.db_root_password}
 MYSQL_DATABASE=${var.db_name}
-MYSQL_USER=${var.db_user}
-MYSQL_PASSWORD=${var.db_password}
 ENVFILE
 
 cd "$${APP_DIR}"
