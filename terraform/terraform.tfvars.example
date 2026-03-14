@@ -1,3 +1,9 @@
-admin_cidr    = "182.76.246.162/32"
-app_port      = 80
-project_title = "Tomato Leaf Disease Detection"
+admin_cidr       = "182.76.246.162/32"
+app_port         = 5000
+github_repo_url  = "https://github.com/CoderShrikant02/major_frontend.git"
+github_branch    = "main"
+app_secret_key   = "tomato-ai-demo-secret-key"
+db_name          = "tomato_disease_db"
+db_user          = "tomato_user"
+db_password      = "tomato_password"
+db_root_password = "rootpassword"

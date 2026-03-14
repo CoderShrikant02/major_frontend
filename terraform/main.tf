@@ -13,20 +13,56 @@ variable "admin_cidr" {
 }
 
 variable "app_port" {
-  description = "HTTP port exposed by the demo page"
+  description = "Application port exposed publicly"
   type        = number
-  default     = 80
+  default     = 5000
 }
 
-variable "project_title" {
-  description = "Title shown on the demo page"
+variable "github_repo_url" {
+  description = "HTTPS Git repository URL"
   type        = string
-  default     = "Tomato Leaf Disease Detection"
+  default     = "https://github.com/CoderShrikant02/major_frontend.git"
+}
+
+variable "github_branch" {
+  description = "Branch to deploy"
+  type        = string
+  default     = "main"
+}
+
+variable "app_secret_key" {
+  description = "Flask secret key"
+  type        = string
+  default     = "tomato-ai-demo-secret-key"
+}
+
+variable "db_name" {
+  description = "MySQL database name"
+  type        = string
+  default     = "tomato_disease_db"
+}
+
+variable "db_user" {
+  description = "MySQL application user"
+  type        = string
+  default     = "tomato_user"
+}
+
+variable "db_password" {
+  description = "MySQL application password"
+  type        = string
+  default     = "tomato_password"
+}
+
+variable "db_root_password" {
+  description = "MySQL root password"
+  type        = string
+  default     = "rootpassword"
 }
 
 resource "aws_security_group" "secure_sg" {
   name        = "secure-security-group"
-  description = "Demo EC2 access"
+  description = "EC2 access for the full Tomato AI project"
   vpc_id      = data.aws_vpc.default.id
 
   ingress {
@@ -38,7 +74,7 @@ resource "aws_security_group" "secure_sg" {
   }
 
   ingress {
-    description = "Public HTTP demo page"
+    description = "App access"
     from_port   = var.app_port
     to_port     = var.app_port
     protocol    = "tcp"
@@ -46,7 +82,7 @@ resource "aws_security_group" "secure_sg" {
   }
 
   egress {
-    description = "Allow all outbound traffic"
+    description = "Allow outbound traffic"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
@@ -85,6 +121,7 @@ set -euxo pipefail
 exec > /var/log/user-data.log 2>&1
 
 export DEBIAN_FRONTEND=noninteractive
+APP_DIR="/opt/major_frontend"
 
 retry() {
   local attempts="$1"
@@ -100,76 +137,40 @@ retry() {
 }
 
 retry 5 apt-get update -y
-retry 5 apt-get install -y --no-install-recommends python3 curl
+retry 5 apt-get install -y --no-install-recommends ca-certificates curl git docker.io docker-compose-v2
 
-mkdir -p /opt/tomato-demo
+systemctl enable --now docker
+usermod -aG docker ubuntu || true
 
-PUBLIC_IP="$$(curl -s http://169.254.169.254/latest/meta-data/public-ipv4 || echo "Unavailable")"
+mkdir -p "$${APP_DIR}"
 
-cat >/opt/tomato-demo/index.html <<HTML
-<!doctype html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>${var.project_title}</title>
-  <style>
-    :root {
-      color-scheme: light;
-      --bg: #f7f1e8;
-      --panel: #fffdf8;
-      --text: #18230f;
-      --accent: #5d8736;
-      --muted: #5f6f52;
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      font-family: Georgia, "Times New Roman", serif;
-      background:
-        radial-gradient(circle at top, rgba(93,135,54,0.16), transparent 32%),
-        linear-gradient(135deg, var(--bg), #efe3d0);
-      color: var(--text);
-    }
-    .card {
-      width: min(720px, calc(100vw - 32px));
-      padding: 40px;
-      background: var(--panel);
-      border: 1px solid rgba(24,35,15,0.12);
-      border-radius: 24px;
-      box-shadow: 0 20px 60px rgba(24,35,15,0.12);
-    }
-    h1 {
-      margin: 0 0 20px;
-      font-size: clamp(2rem, 5vw, 3.5rem);
-      line-height: 1.05;
-    }
-    p {
-      margin: 12px 0;
-      font-size: 1.15rem;
-      color: var(--muted);
-    }
-    strong {
-      color: var(--accent);
-    }
-  </style>
-</head>
-<body>
-  <main class="card">
-    <h1>${var.project_title}</h1>
-    <p><strong>Public IP:</strong> $${PUBLIC_IP}</p>
-    <p><strong>Status:</strong> Running on AWS EC2</p>
-    <p><strong>Deployment:</strong> Terraform + Jenkins</p>
-  </main>
-</body>
-</html>
-HTML
+if [ -d "$${APP_DIR}/.git" ]; then
+  git -C "$${APP_DIR}" fetch --all --prune
+  git -C "$${APP_DIR}" checkout "${var.github_branch}"
+  git -C "$${APP_DIR}" reset --hard "origin/${var.github_branch}"
+else
+  git clone --branch "${var.github_branch}" --depth 1 "${var.github_repo_url}" "$${APP_DIR}"
+fi
 
-cd /opt/tomato-demo
-nohup python3 -m http.server ${var.app_port} --bind 0.0.0.0 >/var/log/tomato-demo.log 2>&1 &
+cat >"$${APP_DIR}/.env" <<ENVFILE
+SECRET_KEY=${var.app_secret_key}
+DB_HOST=db
+DB_USER=${var.db_user}
+DB_PASSWORD=${var.db_password}
+DB_NAME=${var.db_name}
+MYSQL_ROOT_PASSWORD=${var.db_root_password}
+MYSQL_DATABASE=${var.db_name}
+MYSQL_USER=${var.db_user}
+MYSQL_PASSWORD=${var.db_password}
+ENVFILE
+
+cd "$${APP_DIR}"
+docker compose down || true
+docker compose up -d --build
+
+sleep 20
+docker compose ps
+docker compose logs --tail 50 || true
 EOF
 
   tags = {
