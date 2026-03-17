@@ -61,12 +61,6 @@ variable "db_user" {
   default     = "tomato_user"
 }
 
-variable "db_password" {
-  description = "MySQL application password"
-  type        = string
-  sensitive   = true
-}
-
 variable "db_root_password" {
   description = "MySQL root password"
   type        = string
