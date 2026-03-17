@@ -276,11 +276,12 @@ run bash "$${APP_DIR}/scripts/bootstrap_env.sh" "${var.app_port}" "${var.db_name
 
 run cd "$${APP_DIR}"
 try docker-compose down
-run docker-compose up -d --build
+run retry 3 docker-compose up -d --build
 
 sleep 20
 try docker-compose ps
 try docker-compose logs --tail 50
+try curl -fsS "http://localhost:${var.app_port}/health"
 
 if [ -s "$${FAILURES}" ]; then
   log "Completed with warnings. See $${FAILURES}"
