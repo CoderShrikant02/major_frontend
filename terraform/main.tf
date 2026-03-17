@@ -188,9 +188,36 @@ resource "aws_instance" "tomato_server" {
 
   user_data = <<-EOF
 #!/bin/bash
-set -euxo pipefail
+set -Eeuo pipefail
 
-exec > /var/log/user-data.log 2>&1
+LOG="/var/log/user-data.log"
+FAILURES="/var/log/user-data.failures"
+STATUS="/var/log/user-data.status"
+
+exec > >(tee -a "$${LOG}") 2>&1
+touch "$${FAILURES}"
+
+log() {
+  echo "[$$(date -Is)] $*"
+}
+
+run() {
+  log "RUN: $*"
+  "$@"
+}
+
+try() {
+  log "TRY: $*"
+  if "$@"; then
+    log "OK: $*"
+  else
+    local rc=$?
+    log "WARN rc=$${rc}: $*"
+    echo "WARN rc=$${rc}: $*" >> "$${FAILURES}"
+  fi
+}
+
+trap 'rc=$?; log "FATAL rc=$${rc} at line $${LINENO}"; echo "FATAL rc=$${rc} at line $${LINENO}" >> "$${FAILURES}"; exit $${rc}' ERR
 
 export DEBIAN_FRONTEND=noninteractive
 APP_DIR="/opt/major_frontend"
@@ -217,42 +244,51 @@ if ! swapon --show | grep -q .; then
   echo '/swapfile none swap sw 0 0' >> /etc/fstab
 fi
 
-retry 5 apt-get update -y
+run retry 5 apt-get update -y
 # Use Ubuntu repo packages for reliability.
-retry 5 apt-get install -y --no-install-recommends ca-certificates curl git git-lfs docker.io docker-compose awscli
+run retry 5 apt-get install -y --no-install-recommends ca-certificates curl git git-lfs docker.io docker-compose awscli
 
-systemctl enable --now docker
-usermod -aG docker ubuntu || true
+run systemctl enable --now docker
+try usermod -aG docker ubuntu
 
-mkdir -p "$${APP_DIR}"
+run mkdir -p "$${APP_DIR}"
 
 if [ -d "$${APP_DIR}/.git" ]; then
-  git -C "$${APP_DIR}" fetch --all --prune
-  git -C "$${APP_DIR}" checkout "${var.github_branch}"
-  git -C "$${APP_DIR}" reset --hard "origin/${var.github_branch}"
+  run git -C "$${APP_DIR}" fetch --all --prune
+  run git -C "$${APP_DIR}" checkout "${var.github_branch}"
+  run git -C "$${APP_DIR}" reset --hard "origin/${var.github_branch}"
 else
-  git clone --branch "${var.github_branch}" --depth 1 "${var.github_repo_url}" "$${APP_DIR}"
+  run git clone --branch "${var.github_branch}" --depth 1 "${var.github_repo_url}" "$${APP_DIR}"
 fi
 
 # Pull large model artifacts stored in Git LFS.
-git lfs install --system
-git -C "$${APP_DIR}" lfs pull
+try git lfs install --system
+try git -C "$${APP_DIR}" lfs pull
 
-git -C "$${APP_DIR}" rev-parse HEAD || true
-ls -lh "$${APP_DIR}/tomato_leaf_hybrid_eff_final_disease" || true
+try git -C "$${APP_DIR}" rev-parse HEAD
+try ls -lh "$${APP_DIR}/tomato_leaf_hybrid_eff_final_disease"
 
-AWS_REGION="${data.aws_region.current.name}"
+AWS_REGION="${data.aws_region.current.id}"
 export AWS_REGION
 
-bash "$${APP_DIR}/scripts/bootstrap_env.sh" "${var.app_port}" "${var.db_name}"
+try chmod +x "$${APP_DIR}/scripts/bootstrap_env.sh"
+run bash "$${APP_DIR}/scripts/bootstrap_env.sh" "${var.app_port}" "${var.db_name}"
 
-cd "$${APP_DIR}"
-docker-compose down || true
-docker-compose up -d --build
+run cd "$${APP_DIR}"
+try docker-compose down
+run docker-compose up -d --build
 
 sleep 20
-docker-compose ps
-docker-compose logs --tail 50 || true
+try docker-compose ps
+try docker-compose logs --tail 50
+
+if [ -s "$${FAILURES}" ]; then
+  log "Completed with warnings. See $${FAILURES}"
+  echo "WARN" > "$${STATUS}"
+else
+  log "Completed successfully"
+  echo "OK" > "$${STATUS}"
+fi
 EOF
 
   tags = {
