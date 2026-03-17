@@ -7,7 +7,7 @@ data "aws_vpc" "default" {
 }
 
 variable "admin_cidr" {
-  description = "Trusted CIDR for SSH access"
+  description = "Trusted CIDR for SSH and app access"
   type        = string
   default     = "182.76.246.162/32"
 }
@@ -89,7 +89,7 @@ resource "aws_security_group" "secure_sg" {
     from_port   = var.app_port
     to_port     = var.app_port
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [var.admin_cidr]
   }
 
   egress {
