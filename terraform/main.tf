@@ -6,6 +6,8 @@ data "aws_vpc" "default" {
   default = true
 }
 
+data "aws_region" "current" {}
+
 variable "admin_cidr" {
   description = "Trusted CIDR for SSH and app access"
   type        = string
@@ -44,7 +46,7 @@ variable "ssh_key_name" {
 variable "app_secret_key" {
   description = "Flask secret key"
   type        = string
-  default     = "tomato-ai-demo-secret-key"
+  sensitive   = true
 }
 
 variable "db_name" {
@@ -62,13 +64,76 @@ variable "db_user" {
 variable "db_password" {
   description = "MySQL application password"
   type        = string
-  default     = "tomato_password"
+  sensitive   = true
 }
 
 variable "db_root_password" {
   description = "MySQL root password"
   type        = string
-  default     = "rootpassword"
+  sensitive   = true
+}
+
+resource "aws_iam_role" "tomato_instance_role" {
+  name = "tomato-instance-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = "sts:AssumeRole"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy" "tomato_ssm_policy" {
+  name = "tomato-ssm-parameter-read"
+  role = aws_iam_role.tomato_instance_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Effect = "Allow"
+        Action = [
+          "ssm:GetParameter",
+          "ssm:GetParameters"
+        ]
+        Resource = [
+          aws_ssm_parameter.app_secret_key.arn,
+          aws_ssm_parameter.db_root_password.arn
+        ]
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "kms:Decrypt"
+        ]
+        Resource = "*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_instance_profile" "tomato_instance_profile" {
+  name = "tomato-instance-profile"
+  role = aws_iam_role.tomato_instance_role.name
+}
+
+resource "aws_ssm_parameter" "app_secret_key" {
+  name  = "/tomato/app/secret_key"
+  type  = "SecureString"
+  value = var.app_secret_key
+}
+
+resource "aws_ssm_parameter" "db_root_password" {
+  name  = "/tomato/db/root_password"
+  type  = "SecureString"
+  value = var.db_root_password
 }
 
 resource "aws_security_group" "secure_sg" {
@@ -93,11 +158,11 @@ resource "aws_security_group" "secure_sg" {
   }
 
   egress {
-    description = "Allow outbound traffic"
+    description = "Allow outbound traffic inside the VPC only"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
+    cidr_blocks = [data.aws_vpc.default.cidr_block]
   }
 
   tags = {
@@ -113,6 +178,7 @@ resource "aws_instance" "tomato_server" {
   associate_public_ip_address = true
   user_data_replace_on_change = true
   key_name                    = var.ssh_key_name
+  iam_instance_profile        = aws_iam_instance_profile.tomato_instance_profile.name
 
   metadata_options {
     http_endpoint = "enabled"
@@ -159,7 +225,7 @@ fi
 
 retry 5 apt-get update -y
 # Use Ubuntu repo packages for reliability.
-retry 5 apt-get install -y --no-install-recommends ca-certificates curl git git-lfs docker.io docker-compose
+retry 5 apt-get install -y --no-install-recommends ca-certificates curl git git-lfs docker.io docker-compose awscli
 
 systemctl enable --now docker
 usermod -aG docker ubuntu || true
@@ -181,14 +247,18 @@ git -C "$${APP_DIR}" lfs pull
 git -C "$${APP_DIR}" rev-parse HEAD || true
 ls -lh "$${APP_DIR}/tomato_leaf_hybrid_eff_final_disease" || true
 
+AWS_REGION="${data.aws_region.current.name}"
+APP_SECRET_KEY="$(aws ssm get-parameter --name "${aws_ssm_parameter.app_secret_key.name}" --with-decryption --region "$${AWS_REGION}" --query "Parameter.Value" --output text)"
+DB_ROOT_PASSWORD="$(aws ssm get-parameter --name "${aws_ssm_parameter.db_root_password.name}" --with-decryption --region "$${AWS_REGION}" --query "Parameter.Value" --output text)"
+
 cat >"$${APP_DIR}/.env" <<ENVFILE
 APP_HOST_PORT=${var.app_port}
-SECRET_KEY=${var.app_secret_key}
+SECRET_KEY=$${APP_SECRET_KEY}
 DB_HOST=db
 DB_USER=root
-DB_PASSWORD=${var.db_root_password}
+DB_PASSWORD=$${DB_ROOT_PASSWORD}
 DB_NAME=${var.db_name}
-MYSQL_ROOT_PASSWORD=${var.db_root_password}
+MYSQL_ROOT_PASSWORD=$${DB_ROOT_PASSWORD}
 MYSQL_DATABASE=${var.db_name}
 ENVFILE
 
