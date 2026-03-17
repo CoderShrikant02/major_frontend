@@ -248,19 +248,9 @@ git -C "$${APP_DIR}" rev-parse HEAD || true
 ls -lh "$${APP_DIR}/tomato_leaf_hybrid_eff_final_disease" || true
 
 AWS_REGION="${data.aws_region.current.name}"
-APP_SECRET_KEY="$(aws ssm get-parameter --name "${aws_ssm_parameter.app_secret_key.name}" --with-decryption --region "$${AWS_REGION}" --query "Parameter.Value" --output text)"
-DB_ROOT_PASSWORD="$(aws ssm get-parameter --name "${aws_ssm_parameter.db_root_password.name}" --with-decryption --region "$${AWS_REGION}" --query "Parameter.Value" --output text)"
+export AWS_REGION
 
-cat >"$${APP_DIR}/.env" <<ENVFILE
-APP_HOST_PORT=${var.app_port}
-SECRET_KEY=$${APP_SECRET_KEY}
-DB_HOST=db
-DB_USER=root
-DB_PASSWORD=$${DB_ROOT_PASSWORD}
-DB_NAME=${var.db_name}
-MYSQL_ROOT_PASSWORD=$${DB_ROOT_PASSWORD}
-MYSQL_DATABASE=${var.db_name}
-ENVFILE
+bash "$${APP_DIR}/scripts/bootstrap_env.sh" "${var.app_port}" "${var.db_name}"
 
 cd "$${APP_DIR}"
 docker-compose down || true
