@@ -1,5 +1,6 @@
 import base64
 import json
+import re
 import sys
 from functools import wraps
 from io import BytesIO
@@ -26,6 +27,8 @@ preprocess_info = None
 pesticide_recommendations = None
 responsible_insects = None
 display_names = None
+chatbot_faq = {}
+chatbot_aliases = {}
 
 #ye sub .env file sey ayega 
 def validate_startup():
@@ -66,7 +69,7 @@ def validate_startup():
 #ye model ko load karta hai aur uskey sathmetadata bhi load karta hai 
 def load_model_and_metadata():
 
-    global model, index_to_class, preprocess_info, pesticide_recommendations, responsible_insects, display_names
+    global model, index_to_class, preprocess_info, pesticide_recommendations, responsible_insects, display_names, chatbot_faq, chatbot_aliases
 
     try:
         with open("class_indices.json", "r", encoding="utf-8") as f:
@@ -104,6 +107,13 @@ def load_model_and_metadata():
                 display_names = json.load(f)
         except Exception:
             display_names = {}
+
+        try:
+            chatbot_faq = load_chatbot_faq("tomato_disease_faq.json")
+        except Exception:
+            chatbot_faq = {}
+
+        chatbot_aliases = build_chatbot_aliases(display_names, chatbot_faq)
 
     except Exception as e:
         raise e
@@ -347,6 +357,183 @@ def allowed_file(filename):
     """
     allowed_extensions = {"png", "jpg", "jpeg"}
     return "." in filename and filename.rsplit(".", 1)[1].lower() in allowed_extensions
+
+
+def normalize_text(text: str) -> str:
+    text = text.lower()
+    text = re.sub(r"[^\w\s]", " ", text, flags=re.UNICODE)
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
+
+
+def load_chatbot_faq(path: str):
+    data_path = Path(path)
+    if not data_path.exists():
+        return {}
+
+    data = json.loads(data_path.read_text(encoding="utf-8"))
+    faq_by_key = {}
+
+    if isinstance(data, list):
+        for entry in data:
+            key = entry.get("disease_key")
+            if key:
+                faq_by_key[key] = entry
+    elif isinstance(data, dict):
+        for key, entry in data.items():
+            if isinstance(entry, dict):
+                entry.setdefault("disease_key", key)
+                faq_by_key[key] = entry
+
+    return faq_by_key
+
+
+def add_alias(alias_map, key, alias):
+    normalized = normalize_text(alias)
+    if normalized:
+        alias_map[normalized] = key
+
+
+def build_chatbot_aliases(display_name_map, faq_map):
+    alias_map = {}
+
+    if display_name_map:
+        for key, name in display_name_map.items():
+            add_alias(alias_map, key, key)
+            add_alias(alias_map, key, name)
+
+    if faq_map:
+        for key, entry in faq_map.items():
+            add_alias(alias_map, key, key)
+            display_name = entry.get("display_name")
+            if display_name:
+                add_alias(alias_map, key, display_name)
+            display_name_hi = entry.get("display_name_hi")
+            if display_name_hi:
+                add_alias(alias_map, key, display_name_hi)
+            for synonym in entry.get("synonyms", []):
+                add_alias(alias_map, key, synonym)
+            for synonym in entry.get("synonyms_hi", []):
+                add_alias(alias_map, key, synonym)
+
+    return alias_map
+
+
+def pick_field(entry, field_name, lang):
+    if lang == "hi":
+        hi_value = entry.get(f"{field_name}_hi")
+        if hi_value:
+            return hi_value
+    return entry.get(field_name)
+
+
+def generate_chatbot_reply(message: str, lang: str):
+    normalized_message = normalize_text(message)
+    if not normalized_message:
+        return "Please ask a tomato disease question." if lang != "hi" else "कृपया टमाटर रोग से जुड़ा सवाल पूछें।", None
+
+    matched_key = None
+    for alias in sorted(chatbot_aliases.keys(), key=len, reverse=True):
+        if alias and alias in normalized_message:
+            matched_key = chatbot_aliases[alias]
+            break
+
+    if not matched_key:
+        if lang == "hi":
+            return (
+                "मैं केवल टमाटर के रोगों के बारे में बताता/बताती हूँ। उदाहरण: "
+                "अर्ली ब्लाइट के लक्षण क्या हैं? "
+                "लीफ मोल्ड से बचाव कैसे करें? "
+                "टमाटर येलो लीफ कर्ल वायरस बताइए।",
+                None,
+            )
+        return (
+            "I only answer tomato disease questions. Try: "
+            "What are symptoms of early blight? "
+            "How to prevent leaf mold? "
+            "Tell me about tomato yellow leaf curl virus.",
+            None,
+        )
+
+    display_name = display_names.get(matched_key, matched_key)
+    entry = chatbot_faq.get(matched_key, {})
+    if lang == "hi":
+        display_name = entry.get("display_name_hi") or display_name
+    response_lines = [display_name]
+
+    summary = pick_field(entry, "summary", lang)
+    if summary:
+        response_lines.append(summary)
+
+    symptoms = pick_field(entry, "symptoms", lang) or []
+    if isinstance(symptoms, str):
+        symptoms = [symptoms]
+    if symptoms:
+        label = "Symptoms: " if lang != "hi" else "लक्षण: "
+        response_lines.append(label + "; ".join(symptoms[:4]))
+
+    causes = pick_field(entry, "causes", lang)
+    if causes:
+        label = "Causes: " if lang != "hi" else "कारण: "
+        response_lines.append(label + causes)
+
+    prevention = pick_field(entry, "prevention", lang) or []
+    if isinstance(prevention, str):
+        prevention = [prevention]
+    if prevention:
+        label = "Prevention: " if lang != "hi" else "बचाव: "
+        response_lines.append(label + "; ".join(prevention[:4]))
+
+    treatment = pick_field(entry, "treatment", lang) or []
+    if isinstance(treatment, str):
+        treatment = [treatment]
+    if treatment:
+        label = "Treatment: " if lang != "hi" else "उपचार: "
+        response_lines.append(label + "; ".join(treatment[:3]))
+
+    pest = responsible_insects.get(matched_key) if responsible_insects else None
+    if pest:
+        if isinstance(pest, dict):
+            pest_name = pest.get("name")
+        else:
+            pest_name = str(pest)
+        if pest_name:
+            label = "Responsible pest/organism: " if lang != "hi" else "जिम्मेदार कीट/जीव: "
+            response_lines.append(f"{label}{pest_name}")
+
+    recommendations = pesticide_recommendations.get(matched_key, []) if pesticide_recommendations else []
+    if recommendations:
+        names = [rec.get("pesticide_name") for rec in recommendations if rec.get("pesticide_name")]
+        names = [name for name in names if name][:3]
+        if names:
+            label = "Suggested pesticides: " if lang != "hi" else "सुझाए गए कीटनाशक: "
+            response_lines.append(label + ", ".join(names))
+
+    return "\n".join(response_lines), matched_key
+
+
+@app.route("/chat", methods=["POST"])
+@login_required
+def chat():
+    if not request.is_json:
+        return jsonify({"error": "Expected JSON body."}), 400
+
+    message = request.json.get("message", "")
+    lang = request.json.get("lang", "en")
+    if not isinstance(message, str):
+        return jsonify({"error": "Message must be a string."}), 400
+    if lang not in {"en", "hi"}:
+        return jsonify({"error": "Unsupported language."}), 400
+
+    message = message.strip()
+    if not message:
+        return jsonify({"error": "Message cannot be empty."}), 400
+
+    if len(message) > 500:
+        return jsonify({"error": "Message too long (max 500 characters)."}), 400
+
+    reply, matched_key = generate_chatbot_reply(message, lang)
+    return jsonify({"reply": reply, "matched_disease": matched_key or "none"})
 
 
 if __name__ == "__main__":
