@@ -12,6 +12,7 @@ from PIL import Image
 from flask import Flask, flash, jsonify, redirect, render_template, request, session, url_for
 from tensorflow import keras
 from werkzeug.security import check_password_hash, generate_password_hash
+from groq import Groq
 
 from config import Config
 from database import get_db_connection, init_db
@@ -29,6 +30,7 @@ responsible_insects = None
 display_names = None
 chatbot_faq = {}
 chatbot_aliases = {}
+groq_client = None
 
 #ye sub .env file sey ayega 
 def validate_startup():
@@ -366,6 +368,57 @@ def normalize_text(text: str) -> str:
     return text
 
 
+def get_groq_client():
+    global groq_client
+    if not Config.GROQ_API_KEY:
+        return None
+    if groq_client is None:
+        groq_client = Groq(api_key=Config.GROQ_API_KEY)
+    return groq_client
+
+
+def build_groq_system_prompt(lang: str) -> str:
+    if lang == "hi":
+        return (
+            "आप TomatoCare सहायक हैं। केवल टमाटर की बीमारियों, लक्षणों, कारणों, बचाव और उपचार पर जवाब दें। "
+            "अगर सवाल टमाटर रोगों से संबंधित नहीं है, तो विनम्रता से मना करें और टमाटर रोग से जुड़ा सवाल पूछने को कहें। "
+            "जवाब हिंदी में दें और संक्षिप्त रहें।"
+        )
+    return (
+        "You are the TomatoCare assistant. Only answer questions about tomato diseases, symptoms, causes, prevention, "
+        "and treatment. If the user asks something unrelated, politely refuse and ask for a tomato disease question. "
+        "Reply in English and keep it concise."
+    )
+
+
+def groq_chat_reply(message: str, lang: str):
+    client = get_groq_client()
+    if client is None:
+        return None, "Groq API key is not configured."
+    if not Config.GROQ_MODEL:
+        return None, "Groq model is not configured."
+
+    system_prompt = build_groq_system_prompt(lang)
+    try:
+        completion = client.chat.completions.create(
+            model=Config.GROQ_MODEL,
+            messages=[
+                {"role": "system", "content": system_prompt},
+                {"role": "user", "content": message},
+            ],
+            temperature=0.3,
+            max_tokens=350,
+        )
+        content = completion.choices[0].message.content if completion.choices else ""
+        content = (content or "").strip()
+        if not content:
+            raise ValueError("Empty response from Groq.")
+        return content, None
+    except Exception as exc:
+        print(f"Groq chat error: {exc}", file=sys.stderr)
+        return None, "Groq service error. Please try again."
+
+
 def load_chatbot_faq(path: str):
     data_path = Path(path)
     if not data_path.exists():
@@ -532,8 +585,25 @@ def chat():
     if len(message) > 500:
         return jsonify({"error": "Message too long (max 500 characters)."}), 400
 
-    reply, matched_key = generate_chatbot_reply(message, lang)
-    return jsonify({"reply": reply, "matched_disease": matched_key or "none"})
+    reply, error = groq_chat_reply(message, lang)
+    if reply:
+        return jsonify({"reply": reply, "matched_disease": "ai"})
+
+    if error and Config.GROQ_API_KEY and Config.GROQ_MODEL:
+        fallback_reply, matched_key = generate_chatbot_reply(message, lang)
+        if lang == "hi":
+            prefix = "AI अभी उपलब्ध नहीं है। यह त्वरित जानकारी है:\n"
+        else:
+            prefix = "AI is temporarily unavailable. Here is a quick FAQ response:\n"
+        return jsonify(
+            {
+                "reply": f"{prefix}{fallback_reply}",
+                "matched_disease": matched_key or "none",
+                "fallback": True,
+            }
+        )
+
+    return jsonify({"error": error or "Chatbot error."}), 503
 
 
 if __name__ == "__main__":

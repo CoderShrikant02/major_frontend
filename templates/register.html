@@ -4,137 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - TomatoCare</title>
+    <meta name="description" content="Create a TomatoCare account to start detecting tomato leaf diseases.">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-sans);
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            position: relative;
-            overflow: hidden;
-            padding: 20px 0;
-        }
-
-        .particles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(34, 197, 94, 0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 20s infinite;
-            opacity: 0.2;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(50px, -50px); }
-            50% { transform: translate(-50px, -100px); }
-            75% { transform: translate(-100px, 50px); }
-        }
-
-        .container {
-            position: relative;
-            z-index: 1;
-            width: 100%;
-            max-width: 450px;
-            padding: 20px;
-        }
-
-        .register-card {
-            padding: 44px 36px;
-            animation: slideUp 0.6s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(50px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .logo-icon {
-            font-size: 4em;
-            filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.6));
-            animation: bounce 2s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
-        }
-
-        .logo h1 {
-            color: var(--text);
-            margin-top: 10px;
-            font-size: 2em;
-            background: linear-gradient(135deg, #fff, var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .logo p {
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
-        .login-link {
-            text-align: center;
-            margin-top: 20px;
-            color: var(--text-muted);
-        }
-
-        .login-link a {
-            color: var(--accent);
-            text-decoration: none;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .login-link a:hover {
-            color: var(--accent-2);
-            text-shadow: 0 0 10px rgba(22, 163, 74, 0.4);
-        }
-
-        .back-home {
-            text-align: center;
-            margin-top: 20px;
-        }
-
-        .back-home a {
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: all 0.3s;
-        }
-
-        .back-home a:hover {
-            color: var(--accent);
-        }
-    </style>
 </head>
-<body>
+<body class="auth-body">
     <div class="particles" id="particles"></div>
-    
-    <div class="container">
-        <div class="register-card card">
-            <div class="logo">
+
+    <div class="auth-container">
+        <div class="auth-card card">
+            <div class="auth-logo">
                 <div class="logo-icon">🍅</div>
                 <h1>Create Account</h1>
                 <p>Join TomatoCare Today</p>
@@ -174,7 +52,7 @@
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Create Account</button>
             </form>
 
-            <div class="login-link">
+            <div class="auth-link">
                 Already have an account? <a href="{{ url_for('login') }}">Login here</a>
             </div>
 
@@ -185,18 +63,18 @@
     </div>
 
     <script>
-        // Create floating particles
         const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 14; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 15 + 5 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 20 + 's';
-            particle.style.animationDuration = Math.random() * 10 + 15 + 's';
-            particlesContainer.appendChild(particle);
+        for (let i = 0; i < 12; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 14 + 5 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 20 + 's';
+            p.style.animationDuration = Math.random() * 10 + 15 + 's';
+            particlesContainer.appendChild(p);
         }
 
         // Client-side validation

@@ -4,995 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🍅 Dashboard - TomatoCare</title>
+    <meta name="description" content="Upload tomato leaf images for instant AI disease detection and treatment recommendations.">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-sans);
-            background: var(--bg-gradient);
-            min-height: 100vh;
-            padding: 20px;
-            position: relative;
-            overflow-x: hidden;
-        }
-
-        /* Animated Background Particles */
-        .particles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: 0;
-            top: 0;
-            left: 0;
-            pointer-events: none;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(34, 197, 94, 0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 20s infinite;
-            opacity: 0.18;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0); }
-            25% { transform: translate(50px, -50px); }
-            50% { transform: translate(-50px, -100px); }
-            75% { transform: translate(-100px, 50px); }
-        }
-
-        .container {
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-            z-index: 1;
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            color: white;
-            margin-bottom: 30px;
-            background: rgba(10, 12, 11, 0.8);
-            padding: 25px 40px;
-            border-radius: 20px;
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--card-border);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .header-left h1 {
-            font-size: 2.5em;
-            margin-bottom: 5px;
-            background: linear-gradient(135deg, #fff, var(--accent));
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(0 0 10px rgba(22, 163, 74, 0.2));
-        }
-
-        .header-left p {
-            font-size: 1.1em;
-            color: var(--text-muted);
-        }
-
-        .header-right {
-            text-align: right;
-        }
-
-        .user-info {
-            margin-bottom: 10px;
-            font-size: 1.1em;
-            color: var(--accent-2);
-            font-weight: 600;
-        }
-
-        .btn-logout {
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-            padding: 10px 25px;
-            border-radius: 25px;
-            text-decoration: none;
-            display: inline-block;
-            transition: all 0.3s;
-            font-weight: 600;
-        }
-
-        .btn-logout:hover {
-            background: var(--accent);
-            color: white;
-            box-shadow: 0 0 30px rgba(22, 163, 74, 0.4);
-            transform: translateY(-2px);
-        }
-
-        .main-content {
-            display: grid;
-            grid-template-columns: 1fr 2fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card {
-            background: var(--card-bg);
-            backdrop-filter: blur(18px);
-            border: 1px solid var(--card-border);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: var(--shadow-md);
-            transition: all 0.3s;
-        }
-
-        .card:hover {
-            border-color: rgba(22, 163, 74, 0.45);
-            box-shadow: 0 15px 40px rgba(22, 163, 74, 0.16);
-        }
-
-        .card h2 {
-            color: var(--accent-2);
-            margin-bottom: 20px;
-            font-size: 1.8em;
-        }
-
-        .upload-section {
-            text-align: center;
-        }
-
-        .upload-area {
-            border: 3px dashed rgba(22, 163, 74, 0.5);
-            border-radius: 15px;
-            padding: 50px 20px;
-            margin: 20px 0;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: rgba(22, 163, 74, 0.05);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .upload-area::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(22, 163, 74, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s;
-        }
-
-        .upload-area:hover {
-            border-color: #16a34a;
-            background: rgba(22, 163, 74, 0.1);
-            box-shadow: 0 0 30px rgba(22, 163, 74, 0.2);
-        }
-
-        .upload-area:hover::before {
-            animation: shine 1.5s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .upload-area.dragover {
-            border-color: #22c55e;
-            background: rgba(22, 163, 74, 0.15);
-            box-shadow: 0 0 40px rgba(22, 163, 74, 0.4);
-        }
-
-        .upload-icon {
-            font-size: 3em;
-            margin-bottom: 10px;
-            filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.6));
-            position: relative;
-            z-index: 1;
-        }
-
-        .upload-area p {
-            color: #ccc;
-            position: relative;
-            z-index: 1;
-        }
-
-        .upload-area p strong {
-            color: #16a34a;
-        }
-
-        #fileInput {
-            display: none;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: white;
-            border: none;
-            padding: 15px 40px;
-            border-radius: 25px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 15px;
-            box-shadow: 0 10px 30px rgba(22, 163, 74, 0.25);
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 36px rgba(22, 163, 74, 0.35);
-        }
-
-        .btn:active {
-            transform: translateY(-1px);
-        }
-
-        .btn:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .preview-image {
-            max-width: 100%;
-            border-radius: 10px;
-            margin: 20px 0;
-            display: none;
-        }
-
-        .results-section {
-            display: none;
-        }
-
-        .recommendation-section {
-            margin-top: 20px;
-            padding: 30px;
-            background: rgba(22, 163, 74, 0.08);
-            border: 2px solid rgba(22, 163, 74, 0.4);
-            border-radius: 15px;
-        }
-
-        .recommendation-section h3 {
-            color: #22c55e;
-            margin-bottom: 25px;
-            font-size: 1.8em;
-            text-align: center;
-            text-shadow: 0 0 10px rgba(22, 163, 74, 0.5);
-        }
-
-        .pesticide-card {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(22, 163, 74, 0.4);
-            border-radius: 15px;
-            padding: 25px;
-            margin-bottom: 20px;
-            transition: all 0.3s;
-            backdrop-filter: blur(10px);
-        }
-
-        .pesticide-card:hover {
-            border-color: #22c55e;
-            box-shadow: 0 8px 30px rgba(22, 163, 74, 0.3);
-            transform: translateY(-3px);
-            background: rgba(22, 163, 74, 0.1);
-        }
-
-        .pesticide-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid rgba(22, 163, 74, 0.2);
-        }
-
-        .pesticide-name {
-            color: #22c55e;
-            font-size: 1.4em;
-            font-weight: 700;
-            text-shadow: 0 0 10px rgba(22, 163, 74, 0.3);
-        }
-
-        .pesticide-type {
-            padding: 8px 20px;
-            border-radius: 25px;
-            font-size: 0.9em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .type-chemical {
-            background: rgba(239, 68, 68, 0.3);
-            color: #fff;
-            border: 2px solid rgba(239, 68, 68, 0.6);
-            box-shadow: 0 0 15px rgba(239, 68, 68, 0.4);
-        }
-
-        .type-bio {
-            background: rgba(34, 197, 94, 0.3);
-            color: #fff;
-            border: 2px solid rgba(34, 197, 94, 0.6);
-            box-shadow: 0 0 15px rgba(34, 197, 94, 0.4);
-        }
-
-        .type-organic {
-            background: rgba(234, 179, 8, 0.3);
-            color: #fff;
-            border: 2px solid rgba(234, 179, 8, 0.6);
-            box-shadow: 0 0 15px rgba(234, 179, 8, 0.4);
-        }
-
-        .pesticide-details {
-            line-height: 2;
-        }
-
-        .pesticide-details > div {
-            padding: 10px 0;
-            color: #ddd;
-            font-size: 1.05em;
-        }
-
-        .pesticide-details strong {
-            color: #22c55e;
-            font-weight: 700;
-            font-size: 1.1em;
-            display: inline-block;
-            min-width: 120px;
-        }
-
-        .detail-row {
-            display: flex;
-            align-items: flex-start;
-            gap: 10px;
-            padding: 8px 0;
-        }
-
-        .detail-icon {
-            font-size: 1.2em;
-            min-width: 30px;
-        }
-
-        .detail-content {
-            flex: 1;
-            color: #fff;
-        }
-
-        .no-recommendations {
-            text-align: center;
-            padding: 40px;
-            color: #aaa;
-            font-size: 1.1em;
-        }
-
-        .no-recommendations p {
-            margin: 10px 0;
-        }
-
-        /* Pesticide Table Styles */
-        .pesticide-table-container {
-            overflow-x: auto;
-            border-radius: 15px;
-            border: 2px solid rgba(22, 163, 74, 0.3);
-            background: rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
-        }
-
-        .pesticide-table {
-            width: 100%;
-            border-collapse: collapse;
-            color: white;
-            font-size: 0.95em;
-        }
-
-        .pesticide-table thead {
-            background: linear-gradient(135deg, rgba(22, 163, 74, 0.4), rgba(34, 197, 94, 0.4));
-            position: sticky;
-            top: 0;
-            z-index: 10;
-        }
-
-        .pesticide-table th {
-            padding: 15px 12px;
-            text-align: left;
-            font-weight: 700;
-            font-size: 1em;
-            color: #22c55e;
-            border-bottom: 2px solid rgba(22, 163, 74, 0.5);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .pesticide-table td {
-            padding: 12px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            color: #ddd;
-        }
-
-        .pesticide-table tbody tr {
-            transition: all 0.3s;
-        }
-
-        .pesticide-table tbody tr:hover {
-            background: rgba(22, 163, 74, 0.15);
-        }
-
-        .pesticide-table tbody tr:nth-child(even) {
-            background: rgba(255, 255, 255, 0.02);
-        }
-
-        .pesticide-table tbody tr:nth-child(even):hover {
-            background: rgba(22, 163, 74, 0.15);
-        }
-
-        .table-pesticide-name {
-            color: #22c55e;
-            font-weight: 700;
-            font-size: 1.05em;
-        }
-
-        .table-type-badge {
-            display: inline-block;
-            padding: 4px 12px;
-            border-radius: 12px;
-            font-size: 0.85em;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .table-type-chemical {
-            background: rgba(239, 68, 68, 0.3);
-            color: #fff;
-            border: 1px solid rgba(239, 68, 68, 0.6);
-        }
-
-        .table-type-bio {
-            background: rgba(34, 197, 94, 0.3);
-            color: #fff;
-            border: 1px solid rgba(34, 197, 94, 0.6);
-        }
-
-        .table-type-organic {
-            background: rgba(234, 179, 8, 0.3);
-            color: #fff;
-            border: 1px solid rgba(234, 179, 8, 0.6);
-        }
-
-        .prediction-card {
-            background: linear-gradient(135deg, #16a34a, #22c55e);
-            color: white;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 20px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.4);
-            animation: slideUp 0.5s ease-out;
-        }
-
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .prediction-card h2 {
-            font-size: 2em;
-            margin-bottom: 15px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .confidence {
-            font-size: 1.4em;
-            opacity: 0.95;
-            font-weight: 600;
-        }
-
-        .top-predictions h3 {
-            margin-bottom: 15px;
-            color: #333;
-        }
-
-        .prediction-item {
-            margin-bottom: 15px;
-        }
-
-        .prediction-label {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            font-weight: 500;
-        }
-
-        .progress-bar {
-            background: rgba(22, 163, 74, 0.1);
-            border: 1px solid rgba(22, 163, 74, 0.3);
-            border-radius: 10px;
-            height: 25px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: linear-gradient(135deg, #16a34a, #22c55e);
-            height: 100%;
-            border-radius: 10px;
-            transition: width 0.5s ease;
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            padding-right: 10px;
-            color: white;
-            font-weight: bold;
-            box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
-        }
-
-        .all-predictions {
-            margin-top: 20px;
-        }
-
-        .all-predictions summary {
-            cursor: pointer;
-            padding: 10px;
-            background: #f5f5f5;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .all-predictions-list {
-            margin-top: 10px;
-            max-height: 300px;
-            overflow-y: auto;
-        }
-
-        .sidebar {
-            background: rgba(10, 10, 10, 0.8);
-            backdrop-filter: blur(20px);
-            border: 2px solid rgba(22, 163, 74, 0.3);
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
-        }
-
-        .sidebar h3 {
-            color: #16a34a;
-            margin-bottom: 15px;
-            font-size: 1.5em;
-        }
-
-        .info-box {
-            background: rgba(22, 163, 74, 0.05);
-            border: 1px solid rgba(22, 163, 74, 0.2);
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            color: #ccc;
-        }
-
-        .info-box p {
-            color: #16a34a;
-            font-weight: 600;
-            margin-bottom: 10px;
-        }
-
-        .info-box ul {
-            color: #aaa;
-        }
-
-        .class-list {
-            list-style: none;
-            max-height: 400px;
-            overflow-y: auto;
-        }
-
-        .class-list::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .class-list::-webkit-scrollbar-track {
-            background: rgba(22, 163, 74, 0.1);
-            border-radius: 10px;
-        }
-
-        .class-list::-webkit-scrollbar-thumb {
-            background: #16a34a;
-            border-radius: 10px;
-        }
-
-        .class-list li {
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(22, 163, 74, 0.2);
-            color: #aaa;
-            transition: all 0.3s;
-        }
-
-        .class-list li:hover {
-            color: #16a34a;
-            padding-left: 10px;
-        }
-
-        .class-list li:last-child {
-            border-bottom: none;
-        }
-
-        .loading {
-            display: none;
-            text-align: center;
-            padding: 30px;
-        }
-
-        .spinner {
-            border: 4px solid rgba(22, 163, 74, 0.1);
-            border-top: 4px solid #16a34a;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            animation: spin 1s linear infinite;
-            margin: 0 auto;
-            box-shadow: 0 0 20px rgba(22, 163, 74, 0.4);
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        .loading p {
-            color: #16a34a;
-            margin-top: 15px;
-            font-weight: 600;
-        }
-
-        .prediction-label {
-            color: #ccc;
-        }
-
-        @media (max-width: 768px) {
-            .main-content {
-                grid-template-columns: 1fr;
-            }
-            header {
-                flex-direction: column;
-                text-align: center;
-            }
-            .header-right {
-                text-align: center;
-                margin-top: 15px;
-            }
-            .results-grid {
-                grid-template-columns: 1fr !important;
-            }
-        }
-
-        /* New Layout Styles */
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-            margin-bottom: 20px;
-        }
-
-        .upload-section {
-            height: fit-content;
-        }
-
-        .results-info-section {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .disease-info-card {
-            background: linear-gradient(135deg, #16a34a, #22c55e);
-            color: white;
-            padding: 25px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 10px 40px rgba(22, 163, 74, 0.3);
-        }
-
-        .disease-info-card h2 {
-            font-size: 2em;
-            margin-bottom: 10px;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .confidence-badge {
-            font-size: 1.3em;
-            font-weight: 700;
-            display: inline-block;
-            padding: 8px 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border-radius: 25px;
-            margin-top: 10px;
-        }
-
-        .pest-info-card {
-            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1), rgba(220, 38, 38, 0.1));
-            border: 2px solid rgba(239, 68, 68, 0.4);
-            border-radius: 15px;
-            padding: 20px;
-            box-shadow: 0 5px 20px rgba(239, 68, 68, 0.2);
-        }
-
-        .pest-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .pest-image-wrapper {
-            flex-shrink: 0;
-        }
-
-        .pest-image-wrapper img {
-            width: 80px;
-            height: 80px;
-            object-fit: cover;
-            border-radius: 10px;
-            border: 2px solid rgba(239, 68, 68, 0.6);
-        }
-
-        .pest-details {
-            flex: 1;
-        }
-
-        .pest-label {
-            color: #ef4444;
-            font-weight: 700;
-            font-size: 0.9em;
-            margin-bottom: 5px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .pest-name {
-            color: white;
-            font-size: 1.3em;
-            font-weight: 700;
-        }
-
-        .table-section {
-            width: 100%;
-        }
-
-        .section-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 15px;
-            padding: 15px;
-            background: rgba(22, 163, 74, 0.08);
-            border-left: 4px solid var(--accent-2);
-            border-radius: 8px;
-        }
-
-        .section-header h3 {
-            color: var(--accent-2);
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        /* Chatbot Styles */
-        .chat-launcher {
-            position: fixed;
-            right: 24px;
-            bottom: 24px;
-            width: 62px;
-            height: 62px;
-            border-radius: 50%;
-            border: 2px solid rgba(22, 163, 74, 0.6);
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            box-shadow: 0 12px 30px rgba(22, 163, 74, 0.5);
-            color: #fff;
-            font-size: 28px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            z-index: 999;
-            transition: transform 0.2s ease, box-shadow 0.2s ease;
-        }
-
-        .chat-launcher:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(22, 163, 74, 0.6);
-        }
-
-        .chat-panel {
-            position: fixed;
-            right: 24px;
-            bottom: 98px;
-            width: 320px;
-            max-width: 92vw;
-            height: 420px;
-            background: var(--card-bg);
-            border: 2px solid rgba(22, 163, 74, 0.35);
-            border-radius: 18px;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(16px);
-            display: flex;
-            flex-direction: column;
-            overflow: hidden;
-            z-index: 1000;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(12px) scale(0.98);
-            transition: opacity 0.2s ease, transform 0.2s ease;
-        }
-
-        .chat-panel.open {
-            opacity: 1;
-            pointer-events: auto;
-            transform: translateY(0) scale(1);
-        }
-
-        .chat-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 12px 14px;
-            background: rgba(22, 163, 74, 0.15);
-            border-bottom: 1px solid rgba(22, 163, 74, 0.2);
-        }
-
-        .chat-header-left {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            color: #fff;
-            font-weight: 700;
-        }
-
-        .chat-status {
-            font-size: 0.8em;
-            font-weight: 600;
-            color: #86efac;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .chat-status-dot {
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            box-shadow: 0 0 8px rgba(34, 197, 94, 0.9);
-        }
-
-        .chat-close {
-            background: transparent;
-            border: none;
-            color: #fff;
-            font-size: 18px;
-            cursor: pointer;
-            padding: 4px 8px;
-        }
-
-        .chat-body {
-            display: flex;
-            flex-direction: column;
-            flex: 1;
-            padding: 12px;
-            gap: 10px;
-        }
-
-        .chatbot-note {
-            color: var(--text-muted);
-            font-size: 0.9em;
-        }
-
-        .chatbot-messages {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            flex: 1;
-            overflow-y: auto;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.35);
-            border: 1px solid rgba(22, 163, 74, 0.3);
-            border-radius: 12px;
-        }
-
-        .chat-message {
-            padding: 10px 12px;
-            border-radius: 10px;
-            line-height: 1.4;
-            white-space: pre-wrap;
-        }
-
-        .chat-message.user {
-            align-self: flex-end;
-            background: rgba(22, 163, 74, 0.25);
-            color: #fff;
-        }
-
-        .chat-message.bot {
-            align-self: flex-start;
-            background: rgba(255, 255, 255, 0.06);
-            color: #ddd;
-        }
-
-        .chatbot-input {
-            display: flex;
-            gap: 8px;
-            align-items: center;
-        }
-
-        .chatbot-input select {
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(22, 163, 74, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            color: #fff;
-            outline: none;
-        }
-
-        .chatbot-input input {
-            flex: 1;
-            background: rgba(0, 0, 0, 0.4);
-            border: 1px solid rgba(22, 163, 74, 0.3);
-            border-radius: 10px;
-            padding: 10px;
-            color: #fff;
-            outline: none;
-        }
-
-        .chatbot-input input::placeholder {
-            color: #777;
-        }
-
-        .chat-send {
-            padding: 10px 16px;
-            font-size: 0.9em;
-            border-radius: 16px;
-        }
-
-        .chatbot-error {
-            margin-top: 6px;
-            color: var(--danger);
-            font-size: 0.9em;
-        }
-
-        .chat-backdrop {
-            position: fixed;
-            inset: 0;
-            background: transparent;
-            z-index: 998;
-            display: none;
-        }
-
-        .chat-backdrop.open {
-            display: block;
-        }
-
-        @media (max-width: 600px) {
-            .chat-panel {
-                right: 12px;
-                left: 12px;
-                width: auto;
-                bottom: 92px;
-                height: 60vh;
-            }
-
-            .chat-launcher {
-                right: 16px;
-                bottom: 16px;
-            }
-        }
+        body { padding: 20px; }
     </style>
 </head>
 <body>
     <div class="particles" id="particles"></div>
     <div class="container">
-        <header>
+        <header class="dash-header">
             <div class="header-left">
                 <h1>🍅 Tomato Disease Classifier</h1>
                 <p>Upload an image of a tomato plant leaf to identify potential diseases</p>
@@ -1006,21 +27,21 @@
         <!-- Main Grid: Upload Left, Results Right -->
         <div class="results-grid" id="mainGrid">
             <!-- Left: Upload Section -->
-            <div class="card upload-section">
+            <div class="card upload-section" style="padding: 28px;">
                 <h2>📤 Upload Image</h2>
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">📁</div>
                     <p><strong>Click to upload</strong> or drag and drop</p>
-                    <p style="color: #666; margin-top: 10px;">Supported formats: JPG, JPEG, PNG</p>
+                    <p class="upload-formats">Supported formats: JPG, JPEG, PNG</p>
                 </div>
                 <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png">
                 <img id="previewImage" class="preview-image" alt="Preview">
                 <div style="text-align: center;">
-                    <button class="btn" id="classifyBtn" disabled>🔍 Classify Image</button>
+                    <button class="btn btn-primary" id="classifyBtn" disabled style="margin-top: 16px;">🔍 Classify Image</button>
                 </div>
                 <div class="loading" id="loading">
                     <div class="spinner"></div>
-                    <p style="margin-top: 10px;">Analyzing image...</p>
+                    <p>Analyzing image...</p>
                 </div>
             </div>
 
@@ -1049,7 +70,7 @@
         <!-- Table Section Below (Full Width) -->
         <div class="card table-section" id="tableSection" style="display: none;">
             <div class="section-header">
-                <span style="font-size: 2em;">💊</span>
+                <span style="font-size: 1.8em;">💊</span>
                 <h3>Pesticide Recommendations</h3>
             </div>
             <div id="pesticidesContainer"></div>
@@ -1073,7 +94,7 @@
             </div>
             <div class="chatbot-messages" id="chatMessages">
                 <div class="chat-message bot">
-                    Hi! Ask me about tomato diseases, for example: "What are symptoms of early blight?"
+                    Hi! 🍅 Ask me about tomato diseases, for example: "What are symptoms of early blight?"
                 </div>
             </div>
             <div class="chatbot-input">
@@ -1082,7 +103,7 @@
                     <option value="hi">Hindi</option>
                 </select>
                 <input type="text" id="chatInput" placeholder="Ask about a tomato disease...">
-                <button class="btn chat-send" id="chatSend">Send</button>
+                <button class="btn btn-primary chat-send" id="chatSend">Send</button>
             </div>
             <div class="chatbot-error" id="chatError" style="display: none;"></div>
         </div>
@@ -1227,12 +248,11 @@
                         img.style.height = '80px';
                         img.style.objectFit = 'cover';
                         img.style.borderRadius = '10px';
-                        img.style.border = '2px solid rgba(239, 68, 68, 0.6)';
+                        img.style.border = '2px solid rgba(239, 68, 68, 0.5)';
                         
                         // Handle image load error
                         img.onerror = function() {
                             if (index === 0) {
-                                // Show emoji only for first image failure
                                 imgContainer.innerHTML = '<div style="font-size: 4em;">🐛</div>';
                             } else {
                                 imgContainer.remove();
@@ -1283,11 +303,11 @@
 
                     tableHTML += `
                         <tr>
-                            <td style="text-align: center; color: #22c55e; font-weight: 700;">${index + 1}</td>
+                            <td style="text-align: center; color: var(--accent-2); font-weight: 700;">${index + 1}</td>
                             <td class="table-pesticide-name">🌿 ${rec.pesticide_name}</td>
                             <td>${rec.insect_name || '-'}</td>
                             <td style="font-size: 0.9em;">${rec.ingredients || '-'}</td>
-                            <td><strong style="color: #22c55e;">${rec.quantity}</strong></td>
+                            <td><strong style="color: var(--accent-2);">${rec.quantity}</strong></td>
                             <td><span class="table-type-badge ${typeClass}">${rec.type}</span></td>
                             <td style="font-size: 0.9em;">${rec.disease_type || '-'}</td>
                         </tr>
@@ -1298,8 +318,8 @@
                             </tbody>
                         </table>
                     </div>
-                    <div style="text-align: center; margin-top: 15px; color: #aaa; font-size: 0.9em;">
-                        📊 Total: <strong style="color: #22c55e;">${recommendations.length}</strong> pesticide recommendations
+                    <div style="text-align: center; margin-top: 16px; color: var(--text-muted); font-size: 0.9em;">
+                        📊 Total: <strong style="color: var(--accent-2);">${recommendations.length}</strong> pesticide recommendations
                     </div>
                 `;
 
@@ -1314,16 +334,17 @@
 
         // Create floating particles
         const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 18; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 20 + 5 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 20 + 's';
-            particle.style.animationDuration = Math.random() * 10 + 15 + 's';
-            particlesContainer.appendChild(particle);
+        for (let i = 0; i < 16; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 18 + 5 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 20 + 's';
+            p.style.animationDuration = Math.random() * 10 + 15 + 's';
+            particlesContainer.appendChild(p);
         }
 
         // Chatbot
@@ -1338,10 +359,22 @@
         const chatBackdrop = document.getElementById('chatBackdrop');
 
         function appendChatMessage(text, role) {
+            // Remove typing indicator if present
+            const typing = chatMessages.querySelector('.chat-typing');
+            if (typing) typing.remove();
+
             const msg = document.createElement('div');
             msg.className = `chat-message ${role}`;
             msg.textContent = text;
             chatMessages.appendChild(msg);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function showTypingIndicator() {
+            const typing = document.createElement('div');
+            typing.className = 'chat-typing';
+            typing.innerHTML = '<span></span><span></span><span></span>';
+            chatMessages.appendChild(typing);
             chatMessages.scrollTop = chatMessages.scrollHeight;
         }
 
@@ -1355,6 +388,8 @@
             appendChatMessage(message, 'user');
             chatInput.value = '';
             chatSend.disabled = true;
+
+            showTypingIndicator();
 
             try {
                 const response = await fetch('/chat', {
@@ -1370,10 +405,15 @@
                     const errorText = data.error || 'Chatbot error.';
                     chatError.textContent = errorText;
                     chatError.style.display = 'block';
+                    // Remove typing indicator on error
+                    const typing = chatMessages.querySelector('.chat-typing');
+                    if (typing) typing.remove();
                 }
             } catch (error) {
                 chatError.textContent = error.message || 'Chatbot error.';
                 chatError.style.display = 'block';
+                const typing = chatMessages.querySelector('.chat-typing');
+                if (typing) typing.remove();
             } finally {
                 chatSend.disabled = false;
             }
@@ -1392,6 +432,7 @@
             if (shouldOpen) {
                 chatPanel.classList.add('open');
                 chatBackdrop.classList.add('open');
+                chatInput.focus();
             } else {
                 chatPanel.classList.remove('open');
                 chatBackdrop.classList.remove('open');

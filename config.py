@@ -32,6 +32,9 @@ class Config:
     DB_PASSWORD = os.environ.get("DB_PASSWORD", "")
     DB_NAME = os.environ.get("DB_NAME", "")
 
+    GROQ_API_KEY = os.environ.get("GROQ_API_KEY", "")
+    GROQ_MODEL = os.environ.get("GROQ_MODEL", "")
+
     # Backward-compatible aliases for existing code paths.
     MYSQL_HOST = DB_HOST
     MYSQL_USER = DB_USER

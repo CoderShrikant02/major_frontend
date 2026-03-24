@@ -4,236 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🍅 TomatoCare - Detect Tomato Leaf Diseases Instantly</title>
+    <meta name="description" content="AI-powered tomato leaf disease detection with instant diagnosis and pesticide recommendations.">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-sans);
-            background: var(--bg);
-            color: var(--text);
-            overflow-x: hidden;
-        }
-
-        /* Animated Background */
-        .background {
-            position: fixed;
-            width: 100vw;
-            height: 100vh;
-            background: var(--bg-gradient);
-            z-index: -2;
-        }
-
-        .particles {
-            position: fixed;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-        }
-
-        .particle {
-            position: absolute;
-            background: radial-gradient(circle, rgba(34, 197, 94, 0.6) 0%, transparent 70%);
-            border-radius: 50%;
-            animation: float 20s infinite;
-            opacity: 0.2;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) rotate(0deg); }
-            25% { transform: translate(50px, -50px) rotate(90deg); }
-            50% { transform: translate(-50px, -100px) rotate(180deg); }
-            75% { transform: translate(-100px, 50px) rotate(270deg); }
-        }
-
-        /* Navigation */
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 20px 50px;
-            background: rgba(10, 12, 11, 0.8);
-            backdrop-filter: blur(10px);
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            border-bottom: 1px solid var(--card-border);
-        }
-
-        .logo {
-            font-size: 2em;
-            font-weight: bold;
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 24px rgba(22, 163, 74, 0.4);
-        }
-
-        .nav-buttons {
-            display: flex;
-            gap: 20px;
-        }
-
-        .btn-login {
-            background: transparent;
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-
-        .btn-login:hover {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: 0 0 24px rgba(22, 163, 74, 0.4);
-            transform: translateY(-3px);
-        }
-
-        .btn-register {
-            background: linear-gradient(135deg, var(--accent), var(--accent-2));
-            color: #fff;
-            box-shadow: 0 0 20px rgba(22, 163, 74, 0.3);
-        }
-
-        .btn-register:hover {
-            box-shadow: 0 0 40px rgba(22, 163, 74, 0.8);
-            transform: translateY(-3px) scale(1.05);
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 100px 20px;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 4em;
-            margin-bottom: 20px;
-            background: linear-gradient(135deg, #fff, var(--accent), var(--accent-2));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glow 3s ease-in-out infinite;
-        }
-
-        @keyframes glow {
-            0%, 100% { filter: drop-shadow(0 0 10px rgba(22, 163, 74, 0.5)); }
-            50% { filter: drop-shadow(0 0 30px rgba(22, 163, 74, 0.8)); }
-        }
-
-        .hero p {
-            font-size: 1.5em;
-            margin-bottom: 40px;
-            color: var(--text-muted);
-        }
-
-        .tomato-logo {
-            font-size: 10em;
-            animation: bounce 2s infinite;
-            filter: drop-shadow(0 0 30px rgba(22, 163, 74, 0.6));
-        }
-
-        @keyframes bounce {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-30px); }
-        }
-
-        /* Features Section */
-        .features {
-            padding: 80px 50px;
-            background: rgba(10, 12, 11, 0.5);
-        }
-
-        .features h2 {
-            text-align: center;
-            font-size: 3em;
-            margin-bottom: 60px;
-            background: linear-gradient(135deg, #fff, var(--accent));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .feature-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 40px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .feature-card {
-            background: linear-gradient(145deg, rgba(22, 163, 74, 0.08), rgba(16, 39, 49, 0.08));
-            border: 1px solid rgba(22, 163, 74, 0.25);
-            border-radius: 20px;
-            padding: 40px;
-            text-align: center;
-            transition: all 0.5s;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(45deg, transparent, rgba(22, 163, 74, 0.1), transparent);
-            transform: rotate(45deg);
-            transition: all 0.5s;
-        }
-
-        .feature-card:hover::before {
-            animation: shine 1.5s infinite;
-        }
-
-        @keyframes shine {
-            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
-        }
-
-        .feature-card:hover {
-            transform: translateY(-15px) rotateX(10deg);
-            box-shadow: 0 20px 50px rgba(22, 163, 74, 0.3);
-            border-color: var(--accent);
-        }
-
-        .feature-icon {
-            font-size: 4em;
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 20px rgba(22, 163, 74, 0.6));
-        }
-
-        .feature-card h3 {
-            font-size: 1.8em;
-            margin-bottom: 15px;
-            color: var(--accent-2);
-        }
-
-        .feature-card p {
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* Footer */
-        footer {
-            text-align: center;
-            padding: 40px;
-            background: rgba(10, 10, 10, 0.9);
-            border-top: 1px solid var(--card-border);
-        }
-
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.5em; }
-            .hero p { font-size: 1.2em; }
-            .tomato-logo { font-size: 6em; }
-            nav { padding: 15px 20px; }
-            .features { padding: 50px 20px; }
-        }
-    </style>
 </head>
 <body>
     <div class="background"></div>
@@ -241,18 +13,19 @@
 
     <nav>
         <div class="logo">🍅 TomatoCare</div>
-        <div class="nav-buttons">
+        <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">☰</button>
+        <div class="nav-buttons" id="navButtons">
             <a href="{{ url_for('login') }}" class="btn btn-outline btn-login">Login</a>
-            <a href="{{ url_for('login') }}" class="btn btn-primary btn-register">Register</a>
+            <a href="{{ url_for('register') }}" class="btn btn-primary btn-register">Register</a>
         </div>
     </nav>
 
     <section class="hero">
         <div class="tomato-logo">🍅</div>
         <h1>Detect Tomato Leaf Diseases Instantly</h1>
-        <p>AI-Powered Disease Detection & Pesticide Recommendations</p>
+        <p>AI-Powered Disease Detection &amp; Pesticide Recommendations for Healthier Crops</p>
         <div class="nav-buttons" style="justify-content: center;">
-            <a href="{{ url_for('login') }}" class="btn btn-primary btn-register" style="font-size: 1.2em; padding: 15px 40px;">Get Started</a>
+            <a href="{{ url_for('login') }}" class="btn btn-primary btn-register" style="font-size: 1.15em; padding: 16px 44px;">Get Started →</a>
         </div>
     </section>
 
@@ -262,39 +35,48 @@
             <div class="feature-card">
                 <div class="feature-icon">📸</div>
                 <h3>Image Classification</h3>
-                <p>Upload a leaf image and get fast, accurate disease detection.</p>
+                <p>Upload a leaf image and get fast, accurate disease detection powered by deep learning.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">🐛</div>
                 <h3>Pest Detection</h3>
-                <p>Identify common pests tied to each tomato disease.</p>
+                <p>Identify common pests tied to each tomato disease with visual references.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">💊</div>
                 <h3>Pesticide Recommendation</h3>
-                <p>Receive clear, actionable treatment suggestions.</p>
+                <p>Receive clear, actionable treatment suggestions with dosage information.</p>
             </div>
         </div>
     </section>
 
     <footer>
-        <p>&copy; 2025 TomatoCare. All rights reserved.</p>
+        <p>&copy; <span id="footerYear"></span> TomatoCare. All rights reserved.</p>
     </footer>
 
     <script>
-        // Create floating particles
+        // Floating particles
         const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 18; i++) {
-            const particle = document.createElement('div');
-            particle.className = 'particle';
-            particle.style.width = Math.random() * 20 + 5 + 'px';
-            particle.style.height = particle.style.width;
-            particle.style.left = Math.random() * 100 + '%';
-            particle.style.top = Math.random() * 100 + '%';
-            particle.style.animationDelay = Math.random() * 20 + 's';
-            particle.style.animationDuration = Math.random() * 10 + 15 + 's';
-            particlesContainer.appendChild(particle);
+        for (let i = 0; i < 16; i++) {
+            const p = document.createElement('div');
+            p.className = 'particle';
+            const size = Math.random() * 18 + 5 + 'px';
+            p.style.width = size;
+            p.style.height = size;
+            p.style.left = Math.random() * 100 + '%';
+            p.style.top = Math.random() * 100 + '%';
+            p.style.animationDelay = Math.random() * 20 + 's';
+            p.style.animationDuration = Math.random() * 10 + 15 + 's';
+            particlesContainer.appendChild(p);
         }
+
+        // Footer year
+        document.getElementById('footerYear').textContent = new Date().getFullYear();
+
+        // Mobile nav toggle
+        document.getElementById('navToggle').addEventListener('click', () => {
+            document.getElementById('navButtons').classList.toggle('active');
+        });
     </script>
 </body>
 </html>
