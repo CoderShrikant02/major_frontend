@@ -59,11 +59,11 @@ def validate_startup():
     # Model artifacts are large and may be delivered separately (e.g. LFS/S3).
     # Don't crash the whole service if they're missing; predictions will be disabled.
     model_dir = Path("tomato_leaf_hybrid_eff_final_disease")
-    weights_file = model_dir / "model.weights.h5"
-    if not model_dir.exists() or not weights_file.exists():
+    keras_model_file = model_dir / "tomato_leaf_disease.keras"
+    if not keras_model_file.exists():
         print(
             "WARNING: Model artifacts missing; service will start but /predict will not work. "
-            f"Expected: {weights_file}",
+            f"Expected: {keras_model_file}",
             file=sys.stderr,
         )
 
@@ -83,9 +83,9 @@ def load_model_and_metadata():
 
         try:
             model_dir = Path("tomato_leaf_hybrid_eff_final_disease")
-            weights_file = model_dir / "model.weights.h5"
-            if model_dir.exists() and weights_file.exists():
-                model = keras.models.load_model(str(model_dir))
+            keras_model_file = model_dir / "tomato_leaf_disease.keras"
+            if keras_model_file.exists():
+                model = keras.models.load_model(str(keras_model_file))
             else:
                 model = None
         except Exception as e:

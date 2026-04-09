@@ -244,11 +244,6 @@
                         const img = document.createElement('img');
                         img.src = `/static/pest_images/${imgFile}`;
                         img.alt = pestName;
-                        img.style.width = '80px';
-                        img.style.height = '80px';
-                        img.style.objectFit = 'cover';
-                        img.style.borderRadius = '10px';
-                        img.style.border = '2px solid rgba(239, 68, 68, 0.5)';
                         
                         // Handle image load error
                         img.onerror = function() {

@@ -838,7 +838,7 @@ footer {
     background: linear-gradient(135deg, rgba(239, 68, 68, 0.08), rgba(220, 38, 38, 0.08));
     border: 1.5px solid rgba(239, 68, 68, 0.3);
     border-radius: var(--radius-lg);
-    padding: 22px;
+    padding: 32px;
     box-shadow: 0 5px 20px rgba(239, 68, 68, 0.12);
     animation: slideUp 0.5s ease-out 0.15s both;
 }
@@ -846,7 +846,7 @@ footer {
 .pest-header {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 24px;
 }
 
 .pest-image-wrapper {
@@ -854,8 +854,8 @@ footer {
 }
 
 .pest-image-wrapper img {
-    width: 80px;
-    height: 80px;
+    width: 140px;
+    height: 140px;
     object-fit: cover;
     border-radius: var(--radius-sm);
     border: 2px solid rgba(239, 68, 68, 0.5);
